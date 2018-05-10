@@ -5,8 +5,44 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:ParsingPacket_wpf"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
+        Title="ParsingPacket" Height="450" Width="800">
     <Grid>
-        
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition />
+            <ColumnDefinition />
+            <ColumnDefinition />
+            <ColumnDefinition />
+            <ColumnDefinition />
+            <ColumnDefinition />
+            <ColumnDefinition />
+            <ColumnDefinition />
+            <ColumnDefinition />
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition/>
+            <RowDefinition/>
+            <RowDefinition/>
+            <RowDefinition/>
+            <RowDefinition/>
+            <RowDefinition/>
+            <RowDefinition/>
+            <RowDefinition/>
+            <RowDefinition/>
+        </Grid.RowDefinitions>
+
+        <TextBox x:Name="Data" Grid.Row="0" Grid.ColumnSpan="8" Margin="20, 5, 20, 5">
+            Data
+        </TextBox>
+
+        <Label Grid.Column="0" Grid.Row="1">TypePacket:</Label>
+        <Label x:Name="type" Grid.Column="1" Grid.Row="1" Grid.ColumnSpan="2">[Packet]</Label>
+        <Label Grid.Column="3" Grid.Row="1">SEQ:</Label>
+        <Label x:Name="seq" Grid.Column="4" Grid.Row="1" Grid.ColumnSpan="2">[SEQ]</Label>
+        <Label Grid.Column="6" Grid.Row="1">CRC:</Label>
+        <Label x:Name="crc" Grid.Column="7" Grid.Row="1" Grid.ColumnSpan="2">[CRC]</Label>
+        <Label Grid.Column="0" Grid.Row="2">Date:</Label>
+        <Label x:Name="date" Grid.Column="1" Grid.Row="2" Grid.ColumnSpan="2">[Date]</Label>
+        <Label Grid.Column="0" Grid.Row="3">Data:</Label>
+        <Label x:Name="outData" Grid.Column="1" Grid.Row="3" Grid.ColumnSpan="8" Grid.RowSpan="6">[Date]</Label>
     </Grid>
 </Window>
