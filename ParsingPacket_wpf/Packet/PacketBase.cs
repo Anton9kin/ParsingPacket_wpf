@@ -70,6 +70,10 @@ namespace ParsingPacket_wpf.Packet
                     PacketRequestOptions getOptions = new PacketRequestOptions(this.data);
                     list.AddRange(getOptions.list);
                     break;
+                case PacketType.TypePacket.Info_Device_Options_Resp:
+                    PacketResponseOptions respOptions = new PacketResponseOptions(this.data);
+                    list.AddRange(respOptions.list);
+                    break;
 
             }
 
