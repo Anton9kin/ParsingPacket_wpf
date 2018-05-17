@@ -6,49 +6,14 @@
         xmlns:local="clr-namespace:ParsingPacket_wpf"
         mc:Ignorable="d"
         Title="ParsingPacket" Height="450" Width="800">
-    <Grid>
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition />
-            <ColumnDefinition />
-            <ColumnDefinition />
-            <ColumnDefinition />
-            <ColumnDefinition />
-            <ColumnDefinition />
-            <ColumnDefinition />
-            <ColumnDefinition />
-            <ColumnDefinition />
-        </Grid.ColumnDefinitions>
-        <Grid.RowDefinitions>
-            <RowDefinition/>
-            <RowDefinition/>
-            <RowDefinition/>
-            <RowDefinition/>
-            <RowDefinition/>
-            <RowDefinition/>
-            <RowDefinition/>
-            <RowDefinition/>
-            <RowDefinition/>
-        </Grid.RowDefinitions>
-
-        <TextBox x:Name="Data" Grid.Row="0" Grid.ColumnSpan="8" Margin="20, 5, 20, 5" KeyUp="ParsePacket" PreviewMouseDown="ClickData">
-            Data
+    <Grid Margin="20">
+        <TextBox x:Name="Data" HorizontalAlignment="Stretch" VerticalAlignment="Top" Height="30" KeyUp="ParsePacket" MouseDown="ClickData">
         </TextBox>
-
-        <Label Grid.Column="0" Grid.Row="1">TypePacket:</Label>
-        <Label x:Name="type" Grid.Column="1" Grid.Row="1" Grid.ColumnSpan="2">[Packet]</Label>
-        <Label Grid.Column="3" Grid.Row="1">SEQ:</Label>
-        <Label x:Name="seq" Grid.Column="4" Grid.Row="1" Grid.ColumnSpan="2">[SEQ]</Label>
-        <Label Grid.Column="6" Grid.Row="1">CRC:</Label>
-        <Label x:Name="crc" Grid.Column="7" Grid.Row="1" Grid.ColumnSpan="2">[CRC]</Label>
-        <Label Grid.Column="0" Grid.Row="2">Date:</Label>
-        <Label x:Name="date" Grid.Column="1" Grid.Row="2" Grid.ColumnSpan="2">[Date]</Label>
-        <Label Grid.Column="0" Grid.Row="3">Data:</Label>
-        <DataGrid x:Name="outData" AutoGenerateColumns="True" Grid.Column="1" Grid.Row="3" Grid.ColumnSpan="7" Grid.RowSpan="5" Background="White">
+        <DataGrid x:Name="outData" AutoGenerateColumns="True" Background="White" Margin="0,50,0,10" HorizontalAlignment="Stretch">
             <DataGrid.Columns>
-                <DataGridTextColumn Header="Parameter" Binding="{Binding Param}" Width="*"/>
+                <DataGridTextColumn Header="Parameter" Binding="{Binding Param}" Width="0.5*"/>
                 <DataGridTextColumn Header="Value" Binding="{Binding Value}" Width="*" />
             </DataGrid.Columns>
         </DataGrid>
-        
     </Grid>
 </Window>
