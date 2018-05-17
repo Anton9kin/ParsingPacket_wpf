@@ -10,9 +10,9 @@ namespace ParsingPacket_wpf.Packet
     class PacketBase
     {
 
-        public PacketType type = new PacketType();    //type of packet
-        public int seq { get; set; }            //seq of packet
-        public int CRC32 { get; set; }          //CRC of packet
+        private PacketType type = new PacketType();    //type of packet
+        private int seq { get; set; }            //seq of packet
+        private int CRC32 { get; set; }          //CRC of packet
         private Int64 time;           //time of packet
 
         private string[] data;      //data of packet

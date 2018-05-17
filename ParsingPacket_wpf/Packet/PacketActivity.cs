@@ -8,13 +8,13 @@ namespace ParsingPacket_wpf.Packet
 {
     class PacketActivity : PacketBase
     {
-        public Int64 Packet_Time { get; set; }	// Time create packet
-        public int Step { get; set; }			// Steps of Pet
-        public int Hi_Act_Time { get; set; }	// Time of High activity of Pet
-        public int Low_Act_Time { get; set; }	// Time of Low activity of Pet
-        public float CSQ { get; set; }			// Signal quality network
-        public byte Charge { get; set; }        // Charge battery
-        public int[] CCID { get; set; } = new int[20];       // CCID of device
+        private Int64 Packet_Time { get; set; }	// Time create packet
+        private int Step { get; set; }			// Steps of Pet
+        private int Hi_Act_Time { get; set; }	// Time of High activity of Pet
+        private int Low_Act_Time { get; set; }	// Time of Low activity of Pet
+        private float CSQ { get; set; }			// Signal quality network
+        private byte Charge { get; set; }        // Charge battery
+        private int[] CCID { get; set; } = new int[20];       // CCID of device
 
         public PacketActivity(string[] data) {
             Parameter param;

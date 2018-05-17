@@ -8,8 +8,8 @@ namespace ParsingPacket_wpf.Packet
 {
     class PacketRequestOptions : PacketBase
     {
-        public Int64 Packet_Time { get; set; }	// Time create packet
-        public int[] CCID { get; set; } = new int[20];       // CCID of device
+        private Int64 Packet_Time { get; set; }	// Time create packet
+        private int[] CCID { get; set; } = new int[20];       // CCID of device
 
         public PacketRequestOptions(string[] data) {
             Parameter param;
