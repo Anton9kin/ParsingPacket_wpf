@@ -70,6 +70,7 @@
   <ItemGroup>
     <Compile Include="Packet\PacketActivity.cs" />
     <Compile Include="Packet\PacketBase.cs" />
+    <Compile Include="Packet\PacketRequestOptions.cs" />
     <Compile Include="Packet\PacketType.cs" />
     <Compile Include="Parameter.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">

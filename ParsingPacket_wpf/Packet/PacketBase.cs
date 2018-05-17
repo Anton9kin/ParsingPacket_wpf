@@ -66,6 +66,10 @@ namespace ParsingPacket_wpf.Packet
                     PacketActivity active = new PacketActivity(this.data);
                     list.AddRange(active.list);
                     break;
+                case PacketType.TypePacket.Info_Device_Options_Req:
+                    PacketRequestOptions getOptions = new PacketRequestOptions(this.data);
+                    list.AddRange(getOptions.list);
+                    break;
 
             }
 

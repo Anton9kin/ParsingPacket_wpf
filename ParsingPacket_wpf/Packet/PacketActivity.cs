@@ -15,7 +15,6 @@ namespace ParsingPacket_wpf.Packet
         public float CSQ { get; set; }			// Signal quality network
         public byte Charge { get; set; }        // Charge battery
         public int[] CCID { get; set; } = new int[20];       // CCID of device
-        public List<Parameter> list { get; set; } = new List<Parameter>();
 
         public PacketActivity(string[] data) {
             Parameter param;
@@ -55,7 +54,7 @@ namespace ParsingPacket_wpf.Packet
             param = new Parameter { Param = "Charge", Value = Charge.ToString() + " %" };
             list.Add(param);
 
-            param = getCCID(data[19], 19);
+            param = getCCID(data, 19);
             list.Add(param);
         }
     }
