@@ -11,11 +11,11 @@ namespace ParsingPacket_wpf.Packet
     {
 
         private PacketType type = new PacketType();    //type of packet
-        private int seq { get; set; }            //seq of packet
-        private int CRC32 { get; set; }          //CRC of packet
-        private Int64 time;           //time of packet
+        public int seq { get; set; }            //seq of packet
+        public int CRC32 { get; set; }          //CRC of packet
+        public Int64 time;           //time of packet
 
-        private string[] data;      //data of packet
+        public string[] data { get; set; }      //data of packet
         public List<Parameter> list { get; set; } = new List<Parameter>();
 
         public bool parsing(string[] data) {
@@ -53,7 +53,7 @@ namespace ParsingPacket_wpf.Packet
             //add Separator
             param = new Parameter { Param = "", Value = "" };
             list.Add(param);
-
+            /*
             this.data = new string[length - 4 - 5];
             for (int i = 5; i < length - 4; i++)
                 this.data[i - 5] = data[i];
@@ -76,7 +76,7 @@ namespace ParsingPacket_wpf.Packet
                     break;
 
             }
-
+            */
             return true;
         }
 

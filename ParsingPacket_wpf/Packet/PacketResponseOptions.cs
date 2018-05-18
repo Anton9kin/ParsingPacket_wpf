@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Globalization;
+using System.Windows;
 
 namespace ParsingPacket_wpf.Packet
 {
@@ -16,8 +17,20 @@ namespace ParsingPacket_wpf.Packet
         private Byte Code { get; set; }     // Command from UDP
         private UInt32 Data;        ///< Data from UDP
 
-        public PacketResponseOptions(string[] data) {
+        public PacketResponseOptions(string[] dataPack) {
             Parameter param;
+            int length = dataPack.Length;
+
+            if (parsing(dataPack) == false)
+            {
+                MessageBox.Show("Not correct data", "Warning", MessageBoxButton.OK);
+                return;
+            }
+
+            data = new string[length - 4 - 5];
+            for (int i = 5; i < length - 4; i++)
+                data[i - 5] = dataPack[i];
+
 
             string s = data[7] + data[6] + data[5] + data[4] + data[3] + data[2] + data[1] + data[0];
             Packet_Time = Convert.ToInt64(s, 16);
@@ -40,12 +53,8 @@ namespace ParsingPacket_wpf.Packet
             list.Add(param);
 
             Code = Byte.Parse(data[12], NumberStyles.HexNumber);
-            param = new Parameter { Param = "Command from server", Value = Code.ToString() };
-            list.Add(param);
-
             Data = UInt32.Parse(data[16] + data[15] + data[14] + data[13], NumberStyles.HexNumber);
-            param = new Parameter { Param = "Parameter command", Value = Data.ToString() };
-            list.Add(param);
+            CommandFromServer comServer = new CommandFromServer(Code, Data);            
         }
     }
 

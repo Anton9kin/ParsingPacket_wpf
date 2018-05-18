@@ -43,21 +43,17 @@ namespace ParsingPacket_wpf.Packet
 
         public void Check(byte data) {
 
-            type = (TypePacket)data;
+            TypePacket typeP = (TypePacket)data;
 
-            if ((TypePacket.Activity == type) || (TypePacket.Device_Error == type) || (TypePacket.Error_Resp == type) ||
-                (TypePacket.Generic_Resp == type) || (TypePacket.Info_Device_Options_Req == type) || (TypePacket.Info_Device_Options_Resp == type) ||
-                (TypePacket.Info_Pet_Options_Req == type) || (TypePacket.Info_Pet_Options_Resp == type) || (TypePacket.Info_Update_Req == type) ||
-                (TypePacket.Info_Update_Resp == type) || (TypePacket.Info_Update_Result == type) || (TypePacket.Location == type) ||
-                (TypePacket.Location_2 == type) || (TypePacket.Marker == type) || (TypePacket.SNTP_TIME1 == type) || (TypePacket.SNTP_TIME2 == type) ||
-                (TypePacket.Telemetry == type) || (TypePacket.UDP_Statistic == type))
-            {
-                this.type = type;
+            foreach (TypePacket tp in Enum.GetValues(typeof(TypePacket))) {
+                if (tp == typeP)
+                {
+                    type = typeP;
+                    return;
+                }
             }
-            else {
-                type = TypePacket.Null;
-                this.type = type;
-            }
+
+            type = TypePacket.Null;
         }
     }
 }

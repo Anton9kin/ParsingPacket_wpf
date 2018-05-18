@@ -68,6 +68,7 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Packet\CommandFromServer.cs" />
     <Compile Include="Packet\PacketActivity.cs" />
     <Compile Include="Packet\PacketBase.cs" />
     <Compile Include="Packet\PacketRequestOptions.cs" />
