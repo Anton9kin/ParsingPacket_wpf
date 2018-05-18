@@ -52,9 +52,8 @@ namespace ParsingPacket_wpf.Packet
             param = new Parameter { Param = "Telemetry_Passive", Value = (TelemetryPeriod >> 8).ToString() };
             list.Add(param);
 
-            Code = Byte.Parse(data[12], NumberStyles.HexNumber);
-            Data = UInt32.Parse(data[16] + data[15] + data[14] + data[13], NumberStyles.HexNumber);
-            CommandFromServer comServer = new CommandFromServer(Code, Data);            
+            CommandFromServer comServer = new CommandFromServer(data, 12);
+            list.AddRange(comServer.list);
         }
     }
 

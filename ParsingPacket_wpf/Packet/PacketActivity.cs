@@ -51,14 +51,9 @@ namespace ParsingPacket_wpf.Packet
             list.Add(param);
 
             s = data[17] + data[16] + data[15] + data[14];
+            CSQ = ConvertHexStr(s);
 
-            Int32 d = Convert.ToInt32(s, 16);
-            double f = Convert.ToDouble(d);
-
-            byte[] bytes = BitConverter.GetBytes(d);
-            float csq = BitConverter.ToSingle(bytes, 0);
-
-            param = new Parameter { Param = "CSQ", Value = csq.ToString() };
+            param = new Parameter { Param = "CSQ", Value = CSQ.ToString() };
             list.Add(param);
 
             Charge = Convert.ToByte(data[18], 16);

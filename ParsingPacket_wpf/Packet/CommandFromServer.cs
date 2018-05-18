@@ -102,11 +102,83 @@ namespace ParsingPacket_wpf.Packet
         };
 
         public Type command { get; set; }
-        public UInt32 data { get; set; }
+        public UInt32 Data { get; set; }
+        public List<Parameter> list { get; set; } = new List<Parameter>();
 
-        public CommandFromServer(Byte comm, UInt32 data) {
-            command = CheckCommand(comm);
-            this.data = data;
+        public CommandFromServer(string[] str, int i) {
+            Parameter param = new Parameter { Param = "", Value = "" };
+            list.Add(param);
+
+            command = CheckCommand(Byte.Parse(str[i], System.Globalization.NumberStyles.HexNumber));
+            Data = UInt32.Parse(str[i + 4] + str[i + 3] + str[i + 2] + str[i + 1], System.Globalization.NumberStyles.HexNumber);
+
+            param = new Parameter { Param = "Command server", Value = command.ToString() };
+
+            if (command != Type.GeoFence)
+                list.Add(param);
+
+            if (command != Type.NULL)
+            {
+                switch (command)
+                {
+                    case Type.GeoFence:
+                        if (Data != 0)
+                        {
+                            param.Value += "_ON";
+                            list.Add(param);
+
+                            string s;
+                            float Lat, Long;
+                            Byte index;
+
+                            for (int k = 0; k < Data; k++)
+                            {
+                                s = str[5 * k + 8] + str[5 * k + 7] + str[5 * k + 6] + str[5 * k + 5];
+                                Lat = ConvertHexStr(s);
+                                index = Byte.Parse(str[5 * k + 9], System.Globalization.NumberStyles.HexNumber);
+                                s = str[5 * k + 13] + str[5 * k + 12] + str[5 * k + 11] + str[5 * k + 10];
+                                Long = ConvertHexStr(s);
+                                param = new Parameter { Param = "Corner " + index.ToString(), Value = Lat.ToString() + " " + Long.ToString() };
+                                list.Add(param);
+                            }
+
+                        }
+                        else
+                        {
+                            param.Value += "_OFF";
+                            list.Add(param);
+                        }
+                        break;
+
+                    case Type.GetLogPart:
+                        param = new Parameter { Param = "Size get log", Value = Data.ToString() + " bytes" } ;
+                        list.Add(param);
+                        break;
+
+                    case Type.SetActLocRate:
+                        param = new Parameter { Param = "Rate", Value = Data.ToString() };
+                        list.Add(param);
+                        break;
+
+                    case Type.SetSOS: case Type.SetSOSParam:
+                        param = new Parameter { Param = "Rate", Value = (Data & 0xFFFF).ToString() };
+                        list.Add(param);
+
+                        param = new Parameter { Param = "Period", Value = (Data >> 16).ToString() };
+                        list.Add(param);
+                        break;
+
+                    case Type.SetUPDParam:
+                        param = new Parameter { Param = "Rate", Value = Data.ToString() };
+                        list.Add(param);
+                        break;
+
+                    case Type.SwitchLight:
+                        param = new Parameter { Param = "", Value = "Indication_" + (Data == 0 ? "OFF" : "ON") };
+                        list.Add(param);
+                        break;
+                }
+            }
         }
 
         private Type CheckCommand(Byte comm) {
@@ -119,6 +191,15 @@ namespace ParsingPacket_wpf.Packet
             }
 
             return Type.NULL;
+        }
+
+        public float ConvertHexStr(string s)
+        {
+            Int32 d = Convert.ToInt32(s, 16);
+            double f = Convert.ToDouble(d);
+
+            byte[] bytes = BitConverter.GetBytes(d);
+            return BitConverter.ToSingle(bytes, 0);
         }
     }
 }

@@ -108,6 +108,14 @@ namespace ParsingPacket_wpf.Packet
             return param;
         }
 
+        public float ConvertHexStr(string s)
+        {
+            Int32 d = Convert.ToInt32(s, 16);
+            double f = Convert.ToDouble(d);
+
+            byte[] bytes = BitConverter.GetBytes(d);
+            return BitConverter.ToSingle(bytes, 0);
+        }
 
     }
 }
