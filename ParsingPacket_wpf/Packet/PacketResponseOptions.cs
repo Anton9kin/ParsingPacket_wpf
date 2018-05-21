@@ -14,8 +14,7 @@ namespace ParsingPacket_wpf.Packet
         private Byte ActivityPeriod { get; set; }// Period send Activity packet
         private Byte Indication { get; set; }       // Enable/Disable indication in Activity mode
         private UInt16 TelemetryPeriod { get; set; } // Telemetry period (bit 0-7: in activity mode bits:8-15 in passive)
-        private Byte Code { get; set; }     // Command from UDP
-        private UInt32 Data;        ///< Data from UDP
+        private CommandFromServer comServer;
 
         public PacketResponseOptions(string[] dataPack) {
             Parameter param;
@@ -52,7 +51,7 @@ namespace ParsingPacket_wpf.Packet
             param = new Parameter { Param = "Telemetry_Passive", Value = (TelemetryPeriod >> 8).ToString() };
             list.Add(param);
 
-            CommandFromServer comServer = new CommandFromServer(data, 12);
+            comServer = new CommandFromServer(data, 12);
             list.AddRange(comServer.list);
         }
     }

@@ -36,6 +36,8 @@
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Data" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Core" />
@@ -71,6 +73,7 @@
     <Compile Include="Packet\CommandFromServer.cs" />
     <Compile Include="Packet\PacketActivity.cs" />
     <Compile Include="Packet\PacketBase.cs" />
+    <Compile Include="Packet\PacketGenericResponse.cs" />
     <Compile Include="Packet\PacketRequestOptions.cs" />
     <Compile Include="Packet\PacketResponseOptions.cs" />
     <Compile Include="Packet\PacketType.cs" />

@@ -53,6 +53,10 @@ namespace ParsingPacket_wpf
                         PacketActivity activ = new PacketActivity(dataStr);
                         list = activ.list;
                         break;
+                    case PacketType.TypePacket.Generic_Resp:
+                        PacketGenericResponse genResp = new PacketGenericResponse(dataStr);
+                        list = genResp.list;
+                        break;
                     case PacketType.TypePacket.Info_Device_Options_Req:
                         PacketRequestOptions getOpt = new PacketRequestOptions(dataStr);
                         list = getOpt.list;
