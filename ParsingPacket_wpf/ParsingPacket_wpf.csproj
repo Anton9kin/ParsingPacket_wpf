@@ -73,6 +73,7 @@
     <Compile Include="Packet\CommandFromServer.cs" />
     <Compile Include="Packet\PacketActivity.cs" />
     <Compile Include="Packet\PacketBase.cs" />
+    <Compile Include="Packet\PacketDeviceInfo.cs" />
     <Compile Include="Packet\PacketGenericResponse.cs" />
     <Compile Include="Packet\PacketRequestOptions.cs" />
     <Compile Include="Packet\PacketResponseOptions.cs" />

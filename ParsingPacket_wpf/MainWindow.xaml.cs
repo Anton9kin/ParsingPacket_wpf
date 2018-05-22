@@ -73,6 +73,10 @@ namespace ParsingPacket_wpf
                         PacketStatistic ps = new PacketStatistic(dataStr);
                         list = ps.list;
                         break;
+                    case PacketType.TypePacket.Device_Error:
+                        PacketDeviceInfo di = new PacketDeviceInfo(dataStr);
+                        list = di.list;
+                        break;
                 }
 
                 //PacketBase pack = new PacketBase();
