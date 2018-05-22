@@ -74,13 +74,13 @@ namespace ParsingPacket_wpf.Packet
                 {
                     CellInfo cell = new CellInfo();
                     s = getStr(ref n, cell.SizeLac());
-                    cell.setLAC(s);
+                    cell.SetLAC(s);
 
                     s = getStr(ref n, cell.SizeCell());
-                    cell.setCell(s);
+                    cell.SetCell(s);
 
                     s = getStr(ref n, cell.SizeRSSI());
-                    cell.setRssi(s);
+                    cell.SetRssi(s);
 
                     cellInfo.Add(cell);
                 }

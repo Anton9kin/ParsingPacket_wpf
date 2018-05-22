@@ -31,6 +31,7 @@ namespace ParsingPacket_wpf.Packet
         public PacketStatistic (string[] dataPack)
         {
             Parameter param;
+            int n = 0;
             int length = dataPack.Length;
 
             if (parsing(dataPack) == false)
@@ -43,11 +44,20 @@ namespace ParsingPacket_wpf.Packet
             for (int i = 5; i < length - 4; i++)
                 data[i - 5] = dataPack[i];
 
-            mode = (CommandFromServer.Type) Convert.ToByte(data[0], 16);
-            RX_packets = Convert.ToUInt32(data[4] + data[3] + data[2] + data[1], 16);
-            TX_packets = Convert.ToUInt32(data[8] + data[7] + data[6] + data[5], 16);
-            out_bytes = Convert.ToUInt32(data[12] + data[11] + data[10] + data[9], 16);
-            in_bytes = Convert.ToUInt32(data[16] + data[15] + data[14] + data[13], 16);
+            string s = getStr(ref n, sizeof(byte));
+            mode = (CommandFromServer.Type) Convert.ToByte(s, 16);
+
+            s = getStr(ref n, sizeof(UInt32));
+            RX_packets = Convert.ToUInt32(s, 16);
+
+            s = getStr(ref n, sizeof(UInt32));
+            TX_packets = Convert.ToUInt32(s, 16);
+
+            s = getStr(ref n, sizeof(UInt32));
+            out_bytes = Convert.ToUInt32(s, 16);
+
+            s = getStr(ref n, sizeof(UInt32));
+            in_bytes = Convert.ToUInt32(s, 16);
 
             param = getCCID(data, 17);
             list.Add(param);

@@ -15,6 +15,7 @@ namespace ParsingPacket_wpf.Packet
         public PacketTelemetry(string[] dataPack)
         {
             Parameter param;
+            int n = 0;
             int length = dataPack.Length;
 
             if (parsing(dataPack) == false)
@@ -27,26 +28,27 @@ namespace ParsingPacket_wpf.Packet
             for (int i = 5; i < length - 4; i++)
                 data[i - 5] = dataPack[i];
 
-            string s = data[7] + data[6] + data[5] + data[4] + data[3] + data[2] + data[1] + data[0];
+            string s = getStr(ref n, sizeof(Int64));
             Packet_Time = Convert.ToInt64(s, 16);
+
             param = TimestampToDate(Packet_Time);
             list.Add(param);
 
-            Num = Convert.ToUInt16(data[9] + data[8], 16);
+            Num = Convert.ToUInt16(getStr(ref n, sizeof(UInt16)), 16);
             param = new Parameter { Param = "Num of struct", Value = Num.ToString() };
             list.Add(param);
 
             param = getCCID(data, 10);
             list.Add(param);
-
+            n += 20;
 
             Byte type = 0;
             UInt32 dataType = 0;
 
             for (UInt16 i = 0; i < Num; i++)
             {
-                type = Convert.ToByte(data[5*i + 30], 16);
-                dataType = Convert.ToUInt32(data[5 * i + 34] + data[5 * i + 33] + data[5 * i + 32] + data[5 * i + 31], 16);
+                type = Convert.ToByte(getStr(ref n, sizeof(byte)), 16);
+                dataType = Convert.ToUInt32(getStr(ref n, sizeof(UInt32)), 16);
 
                 TelemetryType tt = new TelemetryType(type, dataType);
                 list.AddRange(tt.list);

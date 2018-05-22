@@ -30,17 +30,17 @@ namespace ParsingPacket_wpf.Packet
             return sizeof(byte);
         }
 
-        public void setLAC(string s)
+        public void SetLAC(string s)
         {
             LAC = Convert.ToUInt16(s, 16);
         }
 
-        public void setCell(string s)
+        public void SetCell(string s)
         {
             CELL_ID = Convert.ToUInt32(s, 16);
         }
 
-        public void setRssi(string s)
+        public void SetRssi(string s)
         {
             RSSI = Convert.ToByte(s, 16);
         }

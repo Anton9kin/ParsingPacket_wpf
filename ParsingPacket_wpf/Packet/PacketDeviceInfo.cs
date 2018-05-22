@@ -96,6 +96,7 @@ namespace ParsingPacket_wpf.Packet
         public PacketDeviceInfo(string[] dataPack)
         {
             Parameter p;
+            int n = 0;
             int length = dataPack.Length;
 
             if (parsing(dataPack) == false)
@@ -108,28 +109,37 @@ namespace ParsingPacket_wpf.Packet
             for (int i = 5; i < length - 4; i++)
                 data[i - 5] = dataPack[i];
 
-            string s = data[7] + data[6] + data[5] + data[4] + data[3] + data[2] + data[1] + data[0];
+            string s = getStr(ref n, sizeof(Int64));
             Packet_Time = Convert.ToInt64(s, 16);
+
+            s = getStr(ref n, sizeof(byte));
+            Num = Convert.ToByte(s, 16);
+
+            s = getStr(ref n, sizeof(byte));
+            Error = (E_Device_Error)Convert.ToByte(s, 16);
+
+            s = getStr(ref n, sizeof(byte));
+            Warning = (E_Device_Warning)Convert.ToByte(s, 16);
+
+            s = getStr(ref n, sizeof(byte));
+            Info = (E_Device_Info)Convert.ToByte(s, 16);
+
+            p = getCCID(data, 12);
+            list.Add(p);
+
             p = TimestampToDate(Packet_Time);
             list.Add(p);
 
-            Num = Convert.ToByte(data[8], 16);
             p = new Parameter { Param = "Num of ", Value = Num.ToString() };
             list.Add(p);
 
-            Error = (E_Device_Error)Convert.ToByte(data[9], 16);
             p = new Parameter { Param = "Error", Value = Error.ToString() };
             list.Add(p);
 
-            Warning = (E_Device_Warning)Convert.ToByte(data[10], 16);
             p = new Parameter { Param = "Warning", Value = Warning.ToString() };
             list.Add(p);
 
-            Info = (E_Device_Info)Convert.ToByte(data[11], 16);
             p = new Parameter { Param = "Info", Value = Info.ToString() };
-            list.Add(p);
-
-            p = getCCID(data, 12);
             list.Add(p);
         }
     }

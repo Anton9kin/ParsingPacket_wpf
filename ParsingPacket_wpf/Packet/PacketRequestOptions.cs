@@ -26,8 +26,8 @@ namespace ParsingPacket_wpf.Packet
             for (int i = 5; i < length - 4; i++)
                 data[i - 5] = dataPack[i];
 
-
-            string s = data[7] + data[6] + data[5] + data[4] + data[3] + data[2] + data[1] + data[0];
+            int n = 0;
+            string s = getStr(ref n, sizeof(Int64));
             Packet_Time = Convert.ToInt64(s, 16);
             param = TimestampToDate(Packet_Time);
             list.Add(param);

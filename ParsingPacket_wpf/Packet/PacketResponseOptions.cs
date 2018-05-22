@@ -18,6 +18,7 @@ namespace ParsingPacket_wpf.Packet
 
         public PacketResponseOptions(string[] dataPack) {
             Parameter param;
+            int n = 0;
             int length = dataPack.Length;
 
             if (parsing(dataPack) == false)
@@ -31,20 +32,27 @@ namespace ParsingPacket_wpf.Packet
                 data[i - 5] = dataPack[i];
 
 
-            string s = data[7] + data[6] + data[5] + data[4] + data[3] + data[2] + data[1] + data[0];
+            string s = getStr(ref n, sizeof(Int64));
             Packet_Time = Convert.ToInt64(s, 16);
+
+            s = getStr(ref n, sizeof(byte));
+            ActivityPeriod = Convert.ToByte(s, 16);
+
+            s = getStr(ref n, sizeof(byte));
+            Indication = Convert.ToByte(s, 16);
+
+            s = getStr(ref n, sizeof(UInt16));
+            TelemetryPeriod = Convert.ToUInt16(s, 16);
+
             param = TimestampToDate(Packet_Time);
             list.Add(param);
 
-            ActivityPeriod = Byte.Parse(data[8], NumberStyles.HexNumber);
             param = new Parameter { Param = "Period", Value = ActivityPeriod.ToString() };
             list.Add(param);
 
-            Indication = Byte.Parse(data[9], NumberStyles.HexNumber);
             param = new Parameter { Param = "Indication", Value = Indication == 1 ? "ON" : "OFF" };
             list.Add(param);
 
-            TelemetryPeriod = UInt16.Parse(data[11] + data[10], NumberStyles.HexNumber);
             param = new Parameter { Param = "Telemetry_Active", Value = (TelemetryPeriod & 0xFF).ToString() };
             list.Add(param);
 
