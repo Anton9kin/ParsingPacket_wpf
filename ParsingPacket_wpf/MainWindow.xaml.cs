@@ -82,6 +82,10 @@ namespace ParsingPacket_wpf
                         PacketLocation pl = new PacketLocation(dataStr);
                         list = pl.list;
                         break;
+                    case PacketType.TypePacket.Info_Update_Req:
+                        PacketUpdateRequest ru = new PacketUpdateRequest(dataStr);
+                        list = ru.list;
+                        break;
                 }
 
                 //PacketBase pack = new PacketBase();
