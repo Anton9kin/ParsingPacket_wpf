@@ -79,6 +79,7 @@
     <Compile Include="Packet\PacketLocation.cs" />
     <Compile Include="Packet\PacketRequestOptions.cs" />
     <Compile Include="Packet\PacketResponseOptions.cs" />
+    <Compile Include="Packet\PacketResultUpdate.cs" />
     <Compile Include="Packet\PacketStatistic.cs" />
     <Compile Include="Packet\PacketTelemetry.cs" />
     <Compile Include="Packet\PacketType.cs" />

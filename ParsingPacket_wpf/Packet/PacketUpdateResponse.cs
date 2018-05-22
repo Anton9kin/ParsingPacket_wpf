@@ -11,14 +11,14 @@ namespace ParsingPacket_wpf.Packet
     {
         private enum E_Event_Result
         {
-            EER_TRUE = 0x01,//!< If update is needed
-            EER_FALSE = 0x02,//!< If not update
+            EER_TRUE = 0x01,// If update is needed
+            EER_FALSE = 0x02,// If not update
         };
 
-        private UInt32 FileSize;  ///< Size of file update
-        private UInt32 FileCRC;   ///< CRC of file update
-        private byte[] Version = new byte[4]; ///< Name of file update
-        private E_Event_Result Update; ///< State update (#EER_TRUE if update is need, else #EER_FALSE)
+        private UInt32 FileSize;  // Size of file update
+        private UInt32 FileCRC;   // CRC of file update
+        private byte[] Version = new byte[4]; // Name of file update
+        private E_Event_Result Update; // State update (#EER_TRUE if update is need, else #EER_FALSE)
 
 
         public PacketUpdateResponse(string[] dataPack)
