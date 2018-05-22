@@ -77,6 +77,11 @@ namespace ParsingPacket_wpf
                         PacketDeviceInfo di = new PacketDeviceInfo(dataStr);
                         list = di.list;
                         break;
+                    case PacketType.TypePacket.Location:
+                    case PacketType.TypePacket.Location_2:
+                        PacketLocation pl = new PacketLocation(dataStr);
+                        list = pl.list;
+                        break;
                 }
 
                 //PacketBase pack = new PacketBase();

@@ -19,6 +19,7 @@ namespace ParsingPacket_wpf.Packet
 
         public PacketActivity(string[] dataPack) {
             Parameter param;
+            int n = 0;
             int length = dataPack.Length;
 
             if (parsing(dataPack) == false) {

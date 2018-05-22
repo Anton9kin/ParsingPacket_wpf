@@ -117,5 +117,15 @@ namespace ParsingPacket_wpf.Packet
             return BitConverter.ToSingle(bytes, 0);
         }
 
+        public string getStr(ref int start, int size)
+        {
+            string s = "";
+            for (int i = 0; i < size; i++)
+            {
+                s = s.Insert(0, this.data[start + i]);
+            }
+            start += size;
+            return s;
+        }
     }
 }
