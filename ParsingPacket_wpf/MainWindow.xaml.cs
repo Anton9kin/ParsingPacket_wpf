@@ -69,6 +69,10 @@ namespace ParsingPacket_wpf
                         PacketTelemetry pt = new PacketTelemetry(dataStr);
                         list = pt.list;
                         break;
+                    case PacketType.TypePacket.UDP_Statistic:
+                        PacketStatistic ps = new PacketStatistic(dataStr);
+                        list = ps.list;
+                        break;
                 }
 
                 //PacketBase pack = new PacketBase();
