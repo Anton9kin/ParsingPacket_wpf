@@ -86,6 +86,10 @@ namespace ParsingPacket_wpf
                         PacketUpdateRequest ru = new PacketUpdateRequest(dataStr);
                         list = ru.list;
                         break;
+                    case PacketType.TypePacket.Info_Update_Resp:
+                        PacketUpdateResponse ur = new PacketUpdateResponse(dataStr);
+                        list = ur.list;
+                        break;
                 }
 
                 //PacketBase pack = new PacketBase();

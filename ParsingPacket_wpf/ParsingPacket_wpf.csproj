@@ -83,6 +83,7 @@
     <Compile Include="Packet\PacketTelemetry.cs" />
     <Compile Include="Packet\PacketType.cs" />
     <Compile Include="Packet\PacketUpdateRequest.cs" />
+    <Compile Include="Packet\PacketUpdateResponse.cs" />
     <Compile Include="Packet\TelemetryType.cs" />
     <Compile Include="Parameter.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
