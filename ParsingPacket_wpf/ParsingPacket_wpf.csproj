@@ -76,7 +76,9 @@
     <Compile Include="Packet\PacketGenericResponse.cs" />
     <Compile Include="Packet\PacketRequestOptions.cs" />
     <Compile Include="Packet\PacketResponseOptions.cs" />
+    <Compile Include="Packet\PacketTelemetry.cs" />
     <Compile Include="Packet\PacketType.cs" />
+    <Compile Include="Packet\TelemetryType.cs" />
     <Compile Include="Parameter.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>

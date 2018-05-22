@@ -65,6 +65,10 @@ namespace ParsingPacket_wpf
                         PacketResponseOptions respOpt = new PacketResponseOptions(dataStr);
                         list = respOpt.list;
                         break;
+                    case PacketType.TypePacket.Telemetry:
+                        PacketTelemetry pt = new PacketTelemetry(dataStr);
+                        list = pt.list;
+                        break;
                 }
 
                 //PacketBase pack = new PacketBase();
