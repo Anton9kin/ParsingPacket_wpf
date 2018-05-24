@@ -94,8 +94,8 @@ namespace ParsingPacket_wpf
                             list.AddRange(pt.GetListParam());
                             break;
                         case PacketType.TypePacket.UDP_Statistic:
-                            PacketStatistic ps = new PacketStatistic(dataStr);
-                            list = ps.list;
+                            PacketStatistic ps = new PacketStatistic(dataByte);
+                            list.AddRange(ps.GetListParam());
                             break;
                         case PacketType.TypePacket.Device_Error:
                             PacketDeviceInfo di = new PacketDeviceInfo(dataStr);

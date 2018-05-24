@@ -8,7 +8,7 @@ namespace ParsingPacket_wpf.Packet
 {
     class TelemetryType
     {
-        private  enum TypeTel
+        private  enum TypeTel : byte
         {
             NONE = 0,       // None type
             CSQ_Charge = 1, // CSQ/Charge/Voltage type

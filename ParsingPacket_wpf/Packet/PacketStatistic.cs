@@ -9,7 +9,7 @@ namespace ParsingPacket_wpf.Packet
 {
     class PacketStatistic : PacketBase
     {
-        private enum E_Boot_State
+        private enum E_Boot_State : byte
         {
             FirstBoot = 0,//!< EBS_FirstBoot
             SwitchOff = 1,//!< EBS_SwitchOff
@@ -22,47 +22,44 @@ namespace ParsingPacket_wpf.Packet
             UnknownBoot,  //!< EBS_UnknownBoot
         };
 
-        private CommandFromServer.Type mode { get; set; }   // Type statistic (#ECC_Get_UDP_Statistic, #ECC_Get_UDP_Error, #ECC_GETStatusDevice, #ECC_DeviceVers)
-        private UInt32 RX_packets { get; set; }         // Data statistic
-        private UInt32 TX_packets { get; set; }         // Data statistic
-        private UInt32 out_bytes { get; set; }          // Data statistic
-        private UInt32 in_bytes  { get; set; }	        // Data statistic
+        private CommandFromServer.Type mode;   // Type statistic (#ECC_Get_UDP_Statistic, #ECC_Get_UDP_Error, #ECC_GETStatusDevice, #ECC_DeviceVers)
+        private UInt32 RX_packets;         // Data statistic
+        private UInt32 TX_packets;         // Data statistic
+        private UInt32 out_bytes;          // Data statistic
+        private UInt32 in_bytes;	        // Data statistic
+        private byte[] CCID = new byte[20];       // CCID of device
 
-        public PacketStatistic (string[] dataPack)
+        public PacketStatistic(List<byte> data)
         {
-            Parameter param;
-            int n = 0;
-            int length = dataPack.Length;
-
-            if (parsing(dataPack) == false)
+            if (Parsing(ref data) == false)
             {
                 MessageBox.Show("Not correct data", "Warning", MessageBoxButton.OK);
                 return;
             }
 
-            data = new string[length - 4 - 5];
-            for (int i = 5; i < length - 4; i++)
-                data[i - 5] = dataPack[i];
+            mode = (CommandFromServer.Type)GetByte(ref data);
+            RX_packets = GetUInt32(ref data);
+            TX_packets = GetUInt32(ref data);
+            out_bytes = GetUInt32(ref data);
+            in_bytes = GetUInt32(ref data);
+            for (int i = 0; i < CCID.Length; i++)
+            {
+                CCID[i] = GetByte(ref data);
+            }
+            CRC32 = GetUInt32(ref data);
+        }
 
-            string s = getStr(ref n, sizeof(byte));
-            mode = (CommandFromServer.Type) Convert.ToByte(s, 16);
-
-            s = getStr(ref n, sizeof(UInt32));
-            RX_packets = Convert.ToUInt32(s, 16);
-
-            s = getStr(ref n, sizeof(UInt32));
-            TX_packets = Convert.ToUInt32(s, 16);
-
-            s = getStr(ref n, sizeof(UInt32));
-            out_bytes = Convert.ToUInt32(s, 16);
-
-            s = getStr(ref n, sizeof(UInt32));
-            in_bytes = Convert.ToUInt32(s, 16);
-
-            param = getCCID(data, 17);
-            list.Add(param);
+        public List<Parameter> GetListParam()
+        {
+            SetBaseParam();
 
             Parameter p;
+
+            p = GetCCID_Byte(ref CCID);
+            list.Add(p);
+
+            p = new Parameter { Param = "", Value = "DATA:" };
+            list.Add(p);
 
             switch (mode)
             {
@@ -76,7 +73,7 @@ namespace ParsingPacket_wpf.Packet
                     break;
 
                 case CommandFromServer.Type.Get_TRANSPORT_Error:
-                    p = new Parameter { Param = "Num of Open Error", Value = RX_packets.ToString()};
+                    p = new Parameter { Param = "Num of Open Error", Value = RX_packets.ToString() };
                     list.Add(p);
 
                     p = new Parameter { Param = "Num of Close Error", Value = TX_packets.ToString() };
@@ -109,6 +106,8 @@ namespace ParsingPacket_wpf.Packet
 
                     break;
             }
+
+            return list;
         }
     }
 }
