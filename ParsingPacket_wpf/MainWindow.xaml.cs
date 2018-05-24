@@ -90,8 +90,8 @@ namespace ParsingPacket_wpf
                             list.AddRange(respOpt.GetListParam());
                             break;
                         case PacketType.TypePacket.Telemetry:
-                            PacketTelemetry pt = new PacketTelemetry(dataStr);
-                            list = pt.list;
+                            PacketTelemetry pt = new PacketTelemetry(dataByte);
+                            list.AddRange(pt.GetListParam());
                             break;
                         case PacketType.TypePacket.UDP_Statistic:
                             PacketStatistic ps = new PacketStatistic(dataStr);

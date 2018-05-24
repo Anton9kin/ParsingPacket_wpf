@@ -29,9 +29,31 @@ namespace ParsingPacket_wpf.Packet
 
         private enum GPS_Source { UNKNOWN, INTERNAL, BLE};
 
-        private TypeTel type { get; set; } // Type telemetry
-        private UInt32 data { get; set; }	// Data of telemetry
+        private TypeTel type; // Type telemetry
+        private UInt32 data;	// Data of telemetry
         public List<Parameter> list = new List<Parameter>();
+
+        public TelemetryType(List<byte> data, int num)
+        {
+            PacketBase pack = new PacketBase();
+
+            for (int i = 0; i < num; i++)
+            {
+                if (checkType(data[0]))
+                {
+                    this.type = (TypeTel)data[0];
+                }
+                else {
+                    this.type = TypeTel.NONE;
+                }
+                data.RemoveAt(0);
+
+                this.data = pack.GetUInt32(ref data);
+
+                if (type != TypeTel.NONE)
+                    parsing();
+            }
+        }
 
         public TelemetryType(Byte type, UInt32 data)
         {

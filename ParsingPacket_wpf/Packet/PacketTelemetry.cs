@@ -9,50 +9,52 @@ namespace ParsingPacket_wpf.Packet
 {
     class PacketTelemetry : PacketBase
     {
-        private UInt64 Packet_Time { get; set; }    // Time in packet
-        private UInt16 Num { get; set; }     // Number of struct #ST_Type_Telemetry
+        private UInt64 Packet_Time;    // Time in packet
+        private UInt16 Num;     // Number of struct #ST_Type_Telemetry
+        private TelemetryType TM;
+        private byte[] CCID = new byte[20];       // CCID of device
 
-        public PacketTelemetry(string[] dataPack)
+        public PacketTelemetry(List<byte> data)
         {
-            Parameter param;
-            int n = 0;
-            int length = dataPack.Length;
-
-            if (parsing(dataPack) == false)
+            if (Parsing(ref data) == false)
             {
                 MessageBox.Show("Not correct data", "Warning", MessageBoxButton.OK);
                 return;
             }
+            Packet_Time = GetUint64(ref data);
+            Num = GetUInt16(ref data);
 
-            data = new string[length - 4 - 5];
-            for (int i = 5; i < length - 4; i++)
-                data[i - 5] = dataPack[i];
-
-            string s = getStr(ref n, sizeof(Int64));
-            Packet_Time = Convert.ToUInt64(s, 16);
-
-            param = TimestampToDate(Packet_Time);
-            list.Add(param);
-
-            Num = Convert.ToUInt16(getStr(ref n, sizeof(UInt16)), 16);
-            param = new Parameter { Param = "Num of struct", Value = Num.ToString() };
-            list.Add(param);
-
-            param = getCCID(data, 10);
-            list.Add(param);
-            n += 20;
-
-            Byte type = 0;
-            UInt32 dataType = 0;
-
-            for (UInt16 i = 0; i < Num; i++)
+            for (int i = 0; i < CCID.Length; i++)
             {
-                type = Convert.ToByte(getStr(ref n, sizeof(byte)), 16);
-                dataType = Convert.ToUInt32(getStr(ref n, sizeof(UInt32)), 16);
-
-                TelemetryType tt = new TelemetryType(type, dataType);
-                list.AddRange(tt.list);
+                CCID[i] = GetByte(ref data);
             }
+
+            TM = new TelemetryType(data, Num);
+
+            CRC32 = GetUInt32(ref data);
+        }
+
+        public List<Parameter> GetListParam()
+        {
+            SetBaseParam();
+
+            Parameter p;
+
+            p = TimestampToDate(Packet_Time);
+            list.Add(p);
+
+            p = GetCCID_Byte(ref CCID);
+            list.Add(p);
+
+            p = new Parameter { Param = "", Value = "DATA:" };
+            list.Add(p);
+
+            p = new Parameter { Param = "Num of struct", Value = Num.ToString() };
+            list.Add(p);
+
+            list.AddRange(TM.list);
+
+            return list;
         }
     }
 }
