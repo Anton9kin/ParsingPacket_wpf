@@ -10,7 +10,7 @@ namespace ParsingPacket_wpf.Packet
     class PacketLocation : PacketBase
     {
         private byte verpack { get; set; }          // version of packet
-        private Int64 Packet_Time { get; set; }     // Time create packet
+        private UInt64 Packet_Time { get; set; }     // Time create packet
         private float Latitude { get; set; }        // Latitude (format DDMM.mm)
         private float Longitude { get; set; }       // Longitude (format DDMM.mm)
         private UInt16 Altitude { get; set; }       // Altitude
@@ -41,7 +41,7 @@ namespace ParsingPacket_wpf.Packet
             verpack = Convert.ToByte(s, 16);
             
             s = getStr(ref n, sizeof(Int64));
-            Packet_Time = Convert.ToInt64(s, 16);
+            Packet_Time = Convert.ToUInt64(s, 16);
 
             s = getStr(ref n, sizeof(float));
             Latitude = ConvertHexStr(s);

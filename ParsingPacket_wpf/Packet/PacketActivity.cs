@@ -9,68 +9,72 @@ namespace ParsingPacket_wpf.Packet
 {
     class PacketActivity : PacketBase
     {
-        private Int64 Packet_Time { get; set; }	// Time create packet
-        private UInt16 Step { get; set; }			// Steps of Pet
-        private UInt16 Hi_Act_Time { get; set; }	// Time of High activity of Pet
-        private UInt16 Low_Act_Time { get; set; }	// Time of Low activity of Pet
-        private float CSQ { get; set; }			// Signal quality network
-        private byte Charge { get; set; }        // Charge battery
-        private int[] CCID { get; set; } = new int[20];       // CCID of device
+        private UInt64 Packet_Time;	// Time create packet
+        private UInt16 Step;			// Steps of Pet
+        private UInt16 Hi_Act_Time;	// Time of High activity of Pet
+        private UInt16 Low_Act_Time;	// Time of Low activity of Pet
+        private float CSQ;			// Signal quality network
+        private byte Charge;        // Charge battery
+        private byte[] CCID = new byte[20];       // CCID of device
 
-        public PacketActivity(string[] dataPack) {
-            Parameter param;
-            int n = 0;
-            int length = dataPack.Length;
-
-            if (parsing(dataPack) == false) {
+        public PacketActivity(List<byte> data)
+        {
+            Parameter p;
+            if (Parsing(ref data) == false)
+            {
                 MessageBox.Show("Not correct data", "Warning", MessageBoxButton.OK);
                 return;
             }
+            Packet_Time = GetUint64(ref data);
+            Step = GetUInt16(ref data);
+            Hi_Act_Time = GetUInt16(ref data);
+            Low_Act_Time = GetUInt16(ref data);
+            CSQ = GetFloat(ref data);
+            Charge = GetByte(ref data);
+            for (int i = 0; i < CCID.Length; i++)
+            {
+                CCID[i] = GetByte(ref data);
+            }
+            CRC32 = GetUInt32(ref data);
 
-            data = new string[length - 4 - 5];
-            for (int i = 5; i < length - 4; i++)
-                data[i - 5] = dataPack[i];
+        }
 
-            //parse data of packet
-            string s = getStr(ref n, sizeof(Int64));
-            Packet_Time = Convert.ToInt64(s, 16);
+        public List<Parameter> GetListParam()
+        {
+            Parameter p = new Parameter { Param = "Packet", Value = type.type.ToString() };
+            list.Add(p);
 
-            s = getStr(ref n, sizeof(UInt16));
-            Step = Convert.ToUInt16(s, 16);
+            p = new Parameter { Param = "SEQ", Value = seq.ToString() };
+            list.Add(p);
 
-            s = getStr(ref n, sizeof(UInt16));
-            Hi_Act_Time = Convert.ToUInt16(s, 16);
+            p = new Parameter { Param = "CRC", Value = "0x" + CRC32.ToString("X") };
+            list.Add(p);
 
-            s = getStr(ref n, sizeof(UInt16));
-            Low_Act_Time = Convert.ToUInt16(s, 16);
+            p = TimestampToDate(Packet_Time);
+            list.Add(p);
 
-            s = getStr(ref n, sizeof(float));
-            CSQ = ConvertHexStr(s);
+            p = new Parameter { Param = "", Value = "DATA:" };
+            list.Add(p);
 
-            s = getStr(ref n, sizeof(byte));
-            Charge = Convert.ToByte(s, 16);
+            p = new Parameter { Param = "Step", Value = Step.ToString() + " steps" };
+            list.Add(p);
 
-            //add Parameter
-            param = getCCID(data, 19);
-            list.Add(param);
+            p = new Parameter { Param = "Hi_Time", Value = Hi_Act_Time.ToString() + " sec"};
+            list.Add(p);
 
-            param = TimestampToDate(Packet_Time);
-            list.Add(param);
+            p = new Parameter { Param = "Low_Time", Value = Low_Act_Time.ToString() + " sec" };
+            list.Add(p);
 
-            param = new Parameter { Param = "Step", Value = Step.ToString() + " steps" };
-            list.Add(param);
+            p = new Parameter { Param = "CSQ", Value = CSQ.ToString() };
+            list.Add(p);
 
-            param = new Parameter { Param = "HiTime", Value = Hi_Act_Time.ToString() + " seconds" };
-            list.Add(param);
+            p = new Parameter { Param = "Charge", Value = Charge.ToString() + "%" };
+            list.Add(p);
 
-            param = new Parameter { Param = "Low_Act_Time", Value = Low_Act_Time.ToString() + " seconds" };
-            list.Add(param);
+            p = GetCCID_Byte(ref CCID);
+            list.Add(p);
 
-            param = new Parameter { Param = "CSQ", Value = CSQ.ToString() };
-            list.Add(param);
-
-            param = new Parameter { Param = "Charge", Value = Charge.ToString() + " %" };
-            list.Add(param);
+            return list;
         }
     }
 }

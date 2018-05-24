@@ -9,7 +9,7 @@ namespace ParsingPacket_wpf.Packet
 {
     class PacketTelemetry : PacketBase
     {
-        private Int64 Packet_Time { get; set; }    // Time in packet
+        private UInt64 Packet_Time { get; set; }    // Time in packet
         private UInt16 Num { get; set; }     // Number of struct #ST_Type_Telemetry
 
         public PacketTelemetry(string[] dataPack)
@@ -29,7 +29,7 @@ namespace ParsingPacket_wpf.Packet
                 data[i - 5] = dataPack[i];
 
             string s = getStr(ref n, sizeof(Int64));
-            Packet_Time = Convert.ToInt64(s, 16);
+            Packet_Time = Convert.ToUInt64(s, 16);
 
             param = TimestampToDate(Packet_Time);
             list.Add(param);

@@ -10,13 +10,26 @@ namespace ParsingPacket_wpf.Packet
     class PacketBase
     {
 
-        private PacketType type = new PacketType();    //type of packet
-        public int seq { get; set; }            //seq of packet
-        public int CRC32 { get; set; }          //CRC of packet
-        public Int64 time;           //time of packet
+        public PacketType type = new PacketType();    //type of packet
+        public UInt32 seq { get; set; }            //seq of packet
+        public UInt32 CRC32 { get; set; }          //CRC of packet
 
         public string[] data { get; set; }      //data of packet
         public List<Parameter> list { get; set; } = new List<Parameter>();
+
+        public bool Parsing(ref List<byte> data)
+        {
+            int length = data.Count;
+
+            type.Check(GetByte(ref data));
+
+            if (type.type == PacketType.TypePacket.Null)
+                return false;
+
+            seq = GetUInt32(ref data);
+
+            return true;
+        }
 
         public bool parsing(string[] data) {
             int length = data.Length;
@@ -38,14 +51,14 @@ namespace ParsingPacket_wpf.Packet
 
             //add SEQ
             tmpData = data[4] + data[3] + data[2] + data[1];
-            seq = Int32.Parse(tmpData, NumberStyles.HexNumber);
+            seq = UInt32.Parse(tmpData, NumberStyles.HexNumber);
 
             param = new Parameter { Param = "SEQ", Value = seq.ToString() };
             list.Add(param);
 
             //add CRC
             tmpData = data[length - 1] + data[length - 2] + data[length - 3] + data[length - 4];
-            CRC32 = Int32.Parse(tmpData, NumberStyles.HexNumber);
+            CRC32 = UInt32.Parse(tmpData, NumberStyles.HexNumber);
 
             param = new Parameter { Param = "CRC", Value = "0x" + CRC32.ToString("X") };
             list.Add(param);
@@ -53,31 +66,24 @@ namespace ParsingPacket_wpf.Packet
             //add Separator
             param = new Parameter { Param = "", Value = "" };
             list.Add(param);
-            /*
-            this.data = new string[length - 4 - 5];
-            for (int i = 5; i < length - 4; i++)
-                this.data[i - 5] = data[i];
 
-
-            //parse data to according with type of packet
-            switch (type.type) {
-                case PacketType.TypePacket.Null: break;
-                case PacketType.TypePacket.Activity:
-                    PacketActivity active = new PacketActivity(this.data);
-                    list.AddRange(active.list);
-                    break;
-                case PacketType.TypePacket.Info_Device_Options_Req:
-                    PacketRequestOptions getOptions = new PacketRequestOptions(this.data);
-                    list.AddRange(getOptions.list);
-                    break;
-                case PacketType.TypePacket.Info_Device_Options_Resp:
-                    PacketResponseOptions respOptions = new PacketResponseOptions(this.data);
-                    list.AddRange(respOptions.list);
-                    break;
-
-            }
-            */
             return true;
+        }
+
+        public Parameter GetCCID_Byte(ref byte[] ccid)
+        {
+            string s = "";
+            for (int i = 0; i < ccid.Length; i++)
+            {
+                if (ccid[i] >= 48)
+                {
+                    ccid[i] -= 48;
+                    s += ccid[i].ToString();
+                }
+                else
+                    s += "_";
+            }
+            return new Parameter { Param = "CCID", Value = s };
         }
 
         public Parameter getCCID(string[] ccid, int index) {
@@ -99,7 +105,7 @@ namespace ParsingPacket_wpf.Packet
             return pCCID;
         }
 
-        public Parameter TimestampToDate(Int64 timeStamp) {
+        public Parameter TimestampToDate(UInt64 timeStamp) {
             DateTime dt = new DateTime(1970, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc);
             dt = dt.AddSeconds(timeStamp);
 
@@ -117,6 +123,62 @@ namespace ParsingPacket_wpf.Packet
             return BitConverter.ToSingle(bytes, 0);
         }
 
+        public float GetFloat(ref List<byte> list)
+        {
+            float data = 0;
+            byte[] bytes = new byte[sizeof(UInt32)];
+
+            for (int i = 0; i < sizeof(UInt32); i++)
+                bytes[i] = GetByte(ref list);
+
+            data = BitConverter.ToSingle(bytes, 0);
+
+            return data;
+        }
+
+        public byte GetByte(ref List<byte> list)
+        {
+            byte data = list[0];
+            list.RemoveAt(0);
+            return data;
+        }
+
+        public UInt16 GetUInt16(ref List<byte> list)
+        {
+            UInt16 data = 0;
+            byte[] bytes = new byte [sizeof(UInt16)];
+
+            for (int i = 0; i < sizeof(UInt16); i++)
+                bytes[i] = GetByte(ref list);
+
+            data = BitConverter.ToUInt16(bytes, 0);
+
+            return data;
+        }
+
+        public UInt32 GetUInt32(ref List<byte> list)
+        {
+            UInt32 data = 0;
+            byte[] bytes = new byte[sizeof(UInt32)];
+
+            for (int i = 0; i < sizeof(UInt32); i++)
+                bytes[i] = GetByte(ref list);
+
+            data = BitConverter.ToUInt32(bytes, 0);
+            return data;
+        }
+
+        public UInt64 GetUint64(ref List<byte> list)
+        {
+            UInt64 data = 0;
+            byte[] bytes = new byte[sizeof(UInt64)];
+
+            for (int i = 0; i < sizeof(UInt64); i++)
+                bytes[i] = GetByte(ref list);
+
+            data = BitConverter.ToUInt64(bytes, 0);
+            return data;
+        }
         public string getStr(ref int start, int size)
         {
             string s = "";

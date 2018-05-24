@@ -7,9 +7,10 @@
         mc:Ignorable="d"
         Title="ParsingPacket" Height="450" Width="800">
     <Grid Margin="20">
-        <TextBox x:Name="Data" HorizontalAlignment="Stretch" VerticalAlignment="Top" Height="30" KeyUp="ParsePacket" MouseDown="ClickData">
-        </TextBox>
-        <DataGrid x:Name="outData" AutoGenerateColumns="True" Background="White" Margin="0,50,0,10" HorizontalAlignment="Stretch">
+        <RichTextBox x:Name="Data" HorizontalAlignment="Stretch" VerticalAlignment="Top" Height="60" KeyUp="ParsePacket" MouseDown="ClickData"
+                 VerticalScrollBarVisibility="Auto">
+        </RichTextBox>
+        <DataGrid x:Name="outData" AutoGenerateColumns="True" Background="White" Margin="0,65,0,10" HorizontalAlignment="Stretch">
             <DataGrid.Columns>
                 <DataGridTextColumn Header="Parameter" Binding="{Binding Param}" Width="0.5*"/>
                 <DataGridTextColumn Header="Value" Binding="{Binding Value}" Width="*" />

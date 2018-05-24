@@ -87,7 +87,7 @@ namespace ParsingPacket_wpf.Packet
         };
 
 
-        private Int64 Packet_Time { get; set; }         // Time create packet
+        private UInt64 Packet_Time { get; set; }         // Time create packet
         private Byte Num { get; set; }                  // Number of Error/Warning/Info (now it always equals 1)
         private E_Device_Error Error { get; set; }      // Type Error
         private E_Device_Warning Warning { get; set; }  // Type Warning
@@ -110,7 +110,7 @@ namespace ParsingPacket_wpf.Packet
                 data[i - 5] = dataPack[i];
 
             string s = getStr(ref n, sizeof(Int64));
-            Packet_Time = Convert.ToInt64(s, 16);
+            Packet_Time = Convert.ToUInt64(s, 16);
 
             s = getStr(ref n, sizeof(byte));
             Num = Convert.ToByte(s, 16);

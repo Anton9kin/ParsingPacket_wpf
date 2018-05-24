@@ -22,7 +22,7 @@ namespace ParsingPacket_wpf.Packet
 
             MAX
         };
-        private Int64 Packet_Time;   // Time create packet
+        private UInt64 Packet_Time;   // Time create packet
         private byte[] Version = new byte[4];     // Name version update
         private E_Status_Update Update;			// Status updating (#UPDATE_SUCCESS, #UPDATE_ERROR_CONNECT_MOBILE)
 
@@ -46,7 +46,7 @@ namespace ParsingPacket_wpf.Packet
                 data[i - 5] = dataPack[i];
 
             string s = getStr(ref n, sizeof(Int64));
-            Packet_Time = Convert.ToInt64(s, 16);
+            Packet_Time = Convert.ToUInt64(s, 16);
 
             for (int i = 0; i < 4; i++)
             {

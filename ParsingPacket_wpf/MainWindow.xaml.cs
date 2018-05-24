@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -33,94 +34,131 @@ namespace ParsingPacket_wpf
 
                 outData.Items.Clear();
 
-                string[] dataStr = Data.Text.Split(' ');
+                string str = GetText();
+
+                str = CheckStringData(str);
+
+                Data.Document.Blocks.Clear();
+
+                SetText(str);
                 
+                string[] dataStr = str.Split(' ');
 
-                List<Parameter> list = new List<Parameter>();
-
-                PacketType typePacket = new PacketType();
-                typePacket.Check( Byte.Parse(dataStr[0], System.Globalization.NumberStyles.HexNumber) );
-
-                if (typePacket.type == PacketType.TypePacket.Null)
+                List<byte> dataByte = new List<byte>();
+                foreach (string s in dataStr)
                 {
-                    MessageBox.Show("Not correct data", "Warning", MessageBoxButton.OK);
-                    outData.Items.Clear();
-                    return;
+                    dataByte.Add(Byte.Parse(s, System.Globalization.NumberStyles.HexNumber));
                 }
 
-                switch (typePacket.type) {
-                    case PacketType.TypePacket.Activity:
-                        PacketActivity activ = new PacketActivity(dataStr);
-                        list = activ.list;
-                        break;
-                    case PacketType.TypePacket.Generic_Resp:
-                        PacketGenericResponse genResp = new PacketGenericResponse(dataStr);
-                        list = genResp.list;
-                        break;
-                    case PacketType.TypePacket.Info_Device_Options_Req:
-                        PacketRequestOptions getOpt = new PacketRequestOptions(dataStr);
-                        list = getOpt.list;
-                        break;
-                    case PacketType.TypePacket.Info_Device_Options_Resp:
-                        PacketResponseOptions respOpt = new PacketResponseOptions(dataStr);
-                        list = respOpt.list;
-                        break;
-                    case PacketType.TypePacket.Telemetry:
-                        PacketTelemetry pt = new PacketTelemetry(dataStr);
-                        list = pt.list;
-                        break;
-                    case PacketType.TypePacket.UDP_Statistic:
-                        PacketStatistic ps = new PacketStatistic(dataStr);
-                        list = ps.list;
-                        break;
-                    case PacketType.TypePacket.Device_Error:
-                        PacketDeviceInfo di = new PacketDeviceInfo(dataStr);
-                        list = di.list;
-                        break;
-                    case PacketType.TypePacket.Location:
-                    case PacketType.TypePacket.Location_2:
-                        PacketLocation pl = new PacketLocation(dataStr);
-                        list = pl.list;
-                        break;
-                    case PacketType.TypePacket.Info_Update_Req:
-                        PacketUpdateRequest ru = new PacketUpdateRequest(dataStr);
-                        list = ru.list;
-                        break;
-                    case PacketType.TypePacket.Info_Update_Resp:
-                        PacketUpdateResponse ur = new PacketUpdateResponse(dataStr);
-                        list = ur.list;
-                        break;
-                    case PacketType.TypePacket.Info_Update_Result:
-                        PacketResultUpdate rr = new PacketResultUpdate(dataStr);
-                        list = rr.list;
-                        break;
+                list = new List<Parameter>();
+                int size = 0;
+
+                while (dataByte.Count > 0)
+                {
+                    if (list.Count > 0)
+                    {
+                        list.Add(new Parameter { Param = "", Value = "" });
+                        list.Add(new Parameter { Param = "", Value = "" });
+                    }
+                    PacketType typePacket = new PacketType();
+
+                    typePacket.Check(dataByte[0]);
+
+                    if (typePacket.type == PacketType.TypePacket.Null)
+                    {
+                        MessageBox.Show("Not correct data", "Warning", MessageBoxButton.OK);
+                        outData.Items.Clear();
+                        return;
+                    }
+
+                    switch (typePacket.type)
+                    {
+                        case PacketType.TypePacket.Activity:
+                            PacketActivity ra = new PacketActivity(dataByte);
+                            list.AddRange(ra.GetListParam());
+                            break;
+                        case PacketType.TypePacket.Generic_Resp:
+                            PacketGenericResponse genResp = new PacketGenericResponse(dataStr);
+                            list = genResp.list;
+                            break;
+                        case PacketType.TypePacket.Info_Device_Options_Req:
+                            PacketRequestOptions getOpt = new PacketRequestOptions(dataStr);
+                            list = getOpt.list;
+                            break;
+                        case PacketType.TypePacket.Info_Device_Options_Resp:
+                            PacketResponseOptions respOpt = new PacketResponseOptions(dataStr);
+                            list = respOpt.list;
+                            break;
+                        case PacketType.TypePacket.Telemetry:
+                            PacketTelemetry pt = new PacketTelemetry(dataStr);
+                            list = pt.list;
+                            break;
+                        case PacketType.TypePacket.UDP_Statistic:
+                            PacketStatistic ps = new PacketStatistic(dataStr);
+                            list = ps.list;
+                            break;
+                        case PacketType.TypePacket.Device_Error:
+                            PacketDeviceInfo di = new PacketDeviceInfo(dataStr);
+                            list = di.list;
+                            break;
+                        case PacketType.TypePacket.Location:
+                        case PacketType.TypePacket.Location_2:
+                            PacketLocation pl = new PacketLocation(dataStr);
+                            list = pl.list;
+                            break;
+                        case PacketType.TypePacket.Info_Update_Req:
+                            PacketUpdateRequest ru = new PacketUpdateRequest(dataStr);
+                            list = ru.list;
+                            break;
+                        case PacketType.TypePacket.Info_Update_Resp:
+                            PacketUpdateResponse ur = new PacketUpdateResponse(dataStr);
+                            list = ur.list;
+                            break;
+                        case PacketType.TypePacket.Info_Update_Result:
+                            PacketResultUpdate rr = new PacketResultUpdate(dataStr);
+                            list = rr.list;
+                            break;
+                    }
                 }
-
-                //PacketBase pack = new PacketBase();
-                //parse data
-                //if (pack.parsing(dataStr) == false)
-                //{
-                //    MessageBox.Show("Not correct data", "Warning", MessageBoxButton.OK);
-                 //   outData.Items.Clear();
-                 //   return;
-                //}
-
-                //add parsing data to list
-                //list.AddRange(pack.list);
-
+                
                 //add list to grid
-                foreach (Parameter s in list) {
+                foreach (Parameter s in list)
+                {
                     outData.Items.Add(s);
                 }
-                
             }
         }
         public void ClickData(object sender, MouseButtonEventArgs e) {
             if (e.LeftButton == MouseButtonState.Pressed)
             {
-                if (Data.Text == "Data")
-                    Data.Text = "";
+                if (GetText() == "Data")
+                    SetText ("");
             }
+        }
+
+        private string CheckStringData(string str)
+        {
+            string newS = "";
+
+            var re = new Regex("\r\n");
+
+            newS = re.Replace(str, "");
+
+            return newS;
+        }
+
+        private string GetText()
+        {
+            return new TextRange(Data.Document.ContentStart, Data.Document.ContentEnd).Text;
+        }
+
+        private void SetText(string s)
+        {
+            FlowDocument document = new FlowDocument();
+            Paragraph paragraph = new Paragraph();
+            paragraph.Inlines.Add(s);
+            document.Blocks.Add(paragraph);
+            Data.Document = document;
         }
     }
 }

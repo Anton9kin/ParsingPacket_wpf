@@ -9,7 +9,7 @@ namespace ParsingPacket_wpf.Packet
 {
     class PacketRequestOptions : PacketBase
     {
-        private Int64 Packet_Time { get; set; }	// Time create packet
+        private UInt64 Packet_Time { get; set; }	// Time create packet
         private int[] CCID { get; set; } = new int[20];       // CCID of device
 
         public PacketRequestOptions(string[] dataPack) {
@@ -28,7 +28,7 @@ namespace ParsingPacket_wpf.Packet
 
             int n = 0;
             string s = getStr(ref n, sizeof(Int64));
-            Packet_Time = Convert.ToInt64(s, 16);
+            Packet_Time = Convert.ToUInt64(s, 16);
             param = TimestampToDate(Packet_Time);
             list.Add(param);
 

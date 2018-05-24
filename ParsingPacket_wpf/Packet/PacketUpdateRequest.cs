@@ -9,7 +9,7 @@ namespace ParsingPacket_wpf.Packet
 {
     class PacketUpdateRequest : PacketBase
     {
-        private Int64 Packet_Time;    ///< Time create packet
+        private UInt64 Packet_Time;    ///< Time create packet
         private byte[] Version = new byte[4];   	///< Name current version of device
 
         public PacketUpdateRequest(string[] dataPack)
@@ -30,7 +30,7 @@ namespace ParsingPacket_wpf.Packet
                 data[i - 5] = dataPack[i];
 
             string s = getStr(ref n, sizeof(Int64));
-            Packet_Time = Convert.ToInt64(s, 16);
+            Packet_Time = Convert.ToUInt64(s, 16);
 
             for (int i = 0; i < 4; i++)
             {

@@ -10,7 +10,7 @@ namespace ParsingPacket_wpf.Packet
 {
     class PacketResponseOptions : PacketBase
     {
-        private Int64 Packet_Time { get; set; }	// Time create packet
+        private UInt64 Packet_Time { get; set; }	// Time create packet
         private Byte ActivityPeriod { get; set; }// Period send Activity packet
         private Byte Indication { get; set; }       // Enable/Disable indication in Activity mode
         private UInt16 TelemetryPeriod { get; set; } // Telemetry period (bit 0-7: in activity mode bits:8-15 in passive)
@@ -33,7 +33,7 @@ namespace ParsingPacket_wpf.Packet
 
 
             string s = getStr(ref n, sizeof(Int64));
-            Packet_Time = Convert.ToInt64(s, 16);
+            Packet_Time = Convert.ToUInt64(s, 16);
 
             s = getStr(ref n, sizeof(byte));
             ActivityPeriod = Convert.ToByte(s, 16);
