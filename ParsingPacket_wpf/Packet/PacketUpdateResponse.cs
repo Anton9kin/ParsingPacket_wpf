@@ -9,7 +9,7 @@ namespace ParsingPacket_wpf.Packet
 {
     class PacketUpdateResponse : PacketBase
     {
-        private enum E_Event_Result
+        private enum E_Event_Result : byte
         {
             EER_TRUE = 0x01,// If update is needed
             EER_FALSE = 0x02,// If not update
@@ -20,38 +20,33 @@ namespace ParsingPacket_wpf.Packet
         private byte[] Version = new byte[4]; // Name of file update
         private E_Event_Result Update; // State update (#EER_TRUE if update is need, else #EER_FALSE)
 
-
-        public PacketUpdateResponse(string[] dataPack)
+        public PacketUpdateResponse(List<byte> data)
         {
-            Parameter p;
-            int n = 0;
-
-            int length = dataPack.Length;
-
-            if (parsing(dataPack) == false)
+            if (Parsing(ref data) == false)
             {
                 MessageBox.Show("Not correct data", "Warning", MessageBoxButton.OK);
                 return;
             }
-
-            data = new string[length - 4 - 5];
-            for (int i = 5; i < length - 4; i++)
-                data[i - 5] = dataPack[i];
-
-            string s = getStr(ref n, sizeof(UInt32));
-            FileSize = Convert.ToUInt32(s, 16);
-
-            s = getStr(ref n, sizeof(UInt32));
-            FileCRC = Convert.ToUInt32(s, 16);
-
-            for (int i = 0; i < 4; i++)
+            FileSize = GetUInt32(ref data);
+            FileCRC = GetUInt32(ref data);
+            for (int i = 0; i < Version.Length; i++)
             {
-                s = getStr(ref n, sizeof(byte));
-                Version[i] = Convert.ToByte(s, 16);
+                Version[i] = GetByte(ref data);
             }
+            Update = (E_Event_Result)GetByte(ref data);
 
-            s = getStr(ref n, sizeof(byte));
-            Update = (E_Event_Result)Convert.ToByte(s, 16);
+            CRC32 = GetUInt32(ref data);
+        }
+
+
+        public List<Parameter> GetListParam()
+        {
+            SetBaseParam();
+
+            Parameter p;
+
+            p = new Parameter { Param = "", Value = "DATA:" };
+            list.Add(p);
 
             p = new Parameter { Param = "Update", Value = (Update == E_Event_Result.EER_TRUE) ? "Enable" : "Disable" };
             list.Add(p);
@@ -67,7 +62,7 @@ namespace ParsingPacket_wpf.Packet
                 p = new Parameter { Param = "CRC", Value = "0x" + FileCRC.ToString("X") };
                 list.Add(p);
             }
-            
+            return list;
         }
     }
 }

@@ -107,12 +107,12 @@ namespace ParsingPacket_wpf
                             list.AddRange(rl.GetListParam());
                             break;
                         case PacketType.TypePacket.Info_Update_Req:
-                            PacketUpdateRequest ru = new PacketUpdateRequest(dataStr);
-                            list = ru.list;
+                            PacketUpdateRequest ru = new PacketUpdateRequest(dataByte);
+                            list.AddRange(ru.GetListParam());
                             break;
                         case PacketType.TypePacket.Info_Update_Resp:
-                            PacketUpdateResponse ur = new PacketUpdateResponse(dataStr);
-                            list = ur.list;
+                            PacketUpdateResponse ur = new PacketUpdateResponse(dataByte);
+                            list.AddRange(ur.GetListParam());
                             break;
                         case PacketType.TypePacket.Info_Update_Result:
                             PacketResultUpdate rr = new PacketResultUpdate(dataStr);
