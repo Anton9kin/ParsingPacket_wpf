@@ -17,76 +17,52 @@ namespace ParsingPacket_wpf.Packet
         private byte fix { get; set; }              // fix pos
         private byte hdop { get; set; }             // hdop
         private byte Num { get; set; }              // Number of Base station
-        private UInt32 PLMN { get; set; }			// PLMN (Code country and code operator)
+        private UInt32 PLMN { get; set; }           // PLMN (Code country and code operator)
+        private byte[] CCID = new byte[20];       // CCID of device
         List<CellInfo> cellInfo = new List<CellInfo>();
+        
 
-        public PacketLocation (string[] dataPack)
+        public PacketLocation(List<byte> data)
         {
-            Parameter p;
-            int n = 0;
-
-            int length = dataPack.Length;
-
-            if (parsing(dataPack) == false)
+            if (Parsing(ref data) == false)
             {
                 MessageBox.Show("Not correct data", "Warning", MessageBoxButton.OK);
                 return;
             }
+            verpack = GetByte(ref data);
+            Packet_Time = GetUInt64(ref data);
+            Latitude = GetFloat(ref data);
+            Longitude = GetFloat(ref data);
+            Altitude = GetUInt16(ref data);
+            fix = GetByte(ref data);
+            hdop = GetByte(ref data);
+            Num = GetByte(ref data);
+            Num &= 0x7F;
 
-            data = new string[length - 4 - 5];
-            for (int i = 5; i < length - 4; i++)
-                data[i - 5] = dataPack[i];
-
-            string s = getStr(ref n, sizeof(byte));
-            verpack = Convert.ToByte(s, 16);
-            
-            s = getStr(ref n, sizeof(Int64));
-            Packet_Time = Convert.ToUInt64(s, 16);
-
-            s = getStr(ref n, sizeof(float));
-            Latitude = ConvertHexStr(s);
-
-            s = getStr(ref n, sizeof(float));
-            Longitude = ConvertHexStr(s);
-
-            s = getStr(ref n, sizeof(UInt16));
-            Altitude = Convert.ToUInt16(s, 16);
-
-            s = getStr(ref n, sizeof(byte));
-            fix = Convert.ToByte(s, 16);
-
-            s = getStr(ref n, sizeof(byte));
-            hdop = Convert.ToByte(s, 16);
-
-            s = getStr(ref n, sizeof(byte));
-            Num = Convert.ToByte(s, 16);
-
-            s = getStr(ref n, sizeof(UInt32));
-            PLMN = Convert.ToUInt32(s, 16);
-
-            p = getCCID(data, n);
-            list.Add(p);
-            n += 20;
-
-            if (Num > 0)
+            PLMN = GetUInt32(ref data);
+            for (int i = 0; i < CCID.Length; i++)
             {
-                for (int i = 0; i < (Num & 0x7F); i++)
-                {
-                    CellInfo cell = new CellInfo();
-                    s = getStr(ref n, cell.SizeLac());
-                    cell.SetLAC(s);
-
-                    s = getStr(ref n, cell.SizeCell());
-                    cell.SetCell(s);
-
-                    s = getStr(ref n, cell.SizeRSSI());
-                    cell.SetRssi(s);
-
-                    cellInfo.Add(cell);
-                }
+                CCID[i] = GetByte(ref data);
             }
 
+            for (int i = 0; i < (Num); i++)
+            {
+                cellInfo.Add(new CellInfo(data));
+            }
+
+            CRC32 = GetUInt32(ref data);
+        }
+
+        public List<Parameter> GetListParam()
+        {
+            SetBaseParam();
+
+            Parameter p;
+
             p = TimestampToDate(Packet_Time);
+            list.Add(p);
+
+            p = new Parameter { Param = "", Value = "DATA:" };
             list.Add(p);
 
             p = new Parameter { Param = "Version packet", Value = verpack.ToString() };
@@ -124,6 +100,11 @@ namespace ParsingPacket_wpf.Packet
 
                 k++;
             }
+
+            p = GetCCID_Byte(ref CCID);
+            list.Add(p);
+
+            return list;
         }
     }
 }

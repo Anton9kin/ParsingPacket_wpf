@@ -24,7 +24,7 @@ namespace ParsingPacket_wpf.Packet
                 return;
             }
 
-            NewTime = GetUint64(ref data);
+            NewTime = GetUInt64(ref data);
 
             ActivityPeriod = GetByte(ref data);
             Indication = GetByte(ref data);

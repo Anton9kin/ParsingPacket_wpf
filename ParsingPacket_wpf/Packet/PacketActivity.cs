@@ -24,7 +24,7 @@ namespace ParsingPacket_wpf.Packet
                 MessageBox.Show("Not correct data", "Warning", MessageBoxButton.OK);
                 return;
             }
-            Packet_Time = GetUint64(ref data);
+            Packet_Time = GetUInt64(ref data);
             Step = GetUInt16(ref data);
             Hi_Act_Time = GetUInt16(ref data);
             Low_Act_Time = GetUInt16(ref data);

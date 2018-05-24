@@ -33,38 +33,24 @@ namespace ParsingPacket_wpf.Packet
         private UInt32 data;	// Data of telemetry
         public List<Parameter> list = new List<Parameter>();
 
-        public TelemetryType(List<byte> data, int num)
+        public TelemetryType(List<byte> data)
         {
             PacketBase pack = new PacketBase();
 
-            for (int i = 0; i < num; i++)
+            if (checkType(data[0]))
             {
-                if (checkType(data[0]))
-                {
-                    this.type = (TypeTel)data[0];
-                }
-                else {
-                    this.type = TypeTel.NONE;
-                }
-                data.RemoveAt(0);
-
-                this.data = pack.GetUInt32(ref data);
-
-                if (type != TypeTel.NONE)
-                    parsing();
+                this.type = (TypeTel)data[0];
             }
-        }
-
-        public TelemetryType(Byte type, UInt32 data)
-        {
-            if (checkType(type) == true)
+            else
             {
-                this.type = (TypeTel)type;
-                this.data = data;
+                this.type = TypeTel.NONE;
+            }
+            data.RemoveAt(0);
 
+            this.data = pack.GetUInt32(ref data);
+
+            if (type != TypeTel.NONE)
                 parsing();
-            }
-            
         }
 
         private void parsing()

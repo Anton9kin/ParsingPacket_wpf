@@ -11,8 +11,8 @@ namespace ParsingPacket_wpf.Packet
     {
         private UInt64 Packet_Time;    // Time in packet
         private UInt16 Num;     // Number of struct #ST_Type_Telemetry
-        private TelemetryType TM;
         private byte[] CCID = new byte[20];       // CCID of device
+        private List<TelemetryType> TMList = new List<TelemetryType>();
 
         public PacketTelemetry(List<byte> data)
         {
@@ -21,7 +21,7 @@ namespace ParsingPacket_wpf.Packet
                 MessageBox.Show("Not correct data", "Warning", MessageBoxButton.OK);
                 return;
             }
-            Packet_Time = GetUint64(ref data);
+            Packet_Time = GetUInt64(ref data);
             Num = GetUInt16(ref data);
 
             for (int i = 0; i < CCID.Length; i++)
@@ -29,7 +29,10 @@ namespace ParsingPacket_wpf.Packet
                 CCID[i] = GetByte(ref data);
             }
 
-            TM = new TelemetryType(data, Num);
+            for (int i = 0; i < Num; i++)
+            {
+                TMList.Add(new TelemetryType(data));
+            }
 
             CRC32 = GetUInt32(ref data);
         }
@@ -52,7 +55,8 @@ namespace ParsingPacket_wpf.Packet
             p = new Parameter { Param = "Num of struct", Value = Num.ToString() };
             list.Add(p);
 
-            list.AddRange(TM.list);
+            foreach (TelemetryType tm in TMList)
+                list.AddRange(tm.list);
 
             return list;
         }

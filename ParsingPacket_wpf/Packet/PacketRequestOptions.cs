@@ -20,7 +20,7 @@ namespace ParsingPacket_wpf.Packet
                 return;
             }
 
-            Packet_Time = GetUint64(ref data);
+            Packet_Time = GetUInt64(ref data);
             for (int i = 0; i < CCID.Length; i++)
             {
                 CCID[i] = GetByte(ref data);

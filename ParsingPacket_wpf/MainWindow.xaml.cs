@@ -98,13 +98,13 @@ namespace ParsingPacket_wpf
                             list.AddRange(ps.GetListParam());
                             break;
                         case PacketType.TypePacket.Device_Error:
-                            PacketDeviceInfo di = new PacketDeviceInfo(dataStr);
-                            list = di.list;
+                            PacketDeviceInfo di = new PacketDeviceInfo(dataByte);
+                            list.AddRange(di.GetListParam());
                             break;
                         case PacketType.TypePacket.Location:
                         case PacketType.TypePacket.Location_2:
-                            PacketLocation pl = new PacketLocation(dataStr);
-                            list = pl.list;
+                            PacketLocation rl = new PacketLocation(dataByte);
+                            list.AddRange(rl.GetListParam());
                             break;
                         case PacketType.TypePacket.Info_Update_Req:
                             PacketUpdateRequest ru = new PacketUpdateRequest(dataStr);

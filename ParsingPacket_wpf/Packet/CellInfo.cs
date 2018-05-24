@@ -12,37 +12,13 @@ namespace ParsingPacket_wpf.Packet
         public UInt32 CELL_ID { get; set; }   // Cell ID base station
         public byte RSSI { get; set; }		   // RSSI base station
 
-        public int Size()
+        public CellInfo(List<byte> data)
         {
-            return sizeof(UInt16) + sizeof(UInt32) + sizeof(byte);
-        }
+            PacketBase pack = new PacketBase();
 
-        public int SizeLac()
-        {
-            return sizeof(UInt16);
-        }
-        public int SizeCell()
-        {
-            return sizeof(UInt32);
-        }
-        public int SizeRSSI()
-        {
-            return sizeof(byte);
-        }
-
-        public void SetLAC(string s)
-        {
-            LAC = Convert.ToUInt16(s, 16);
-        }
-
-        public void SetCell(string s)
-        {
-            CELL_ID = Convert.ToUInt32(s, 16);
-        }
-
-        public void SetRssi(string s)
-        {
-            RSSI = Convert.ToByte(s, 16);
+            LAC = pack.GetUInt16(ref data);
+            CELL_ID = pack.GetUInt32(ref data);
+            RSSI = pack.GetByte(ref data);
         }
     }
 }

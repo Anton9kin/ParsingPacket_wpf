@@ -180,7 +180,7 @@ namespace ParsingPacket_wpf.Packet
             return data;
         }
 
-        public UInt64 GetUint64(ref List<byte> list)
+        public UInt64 GetUInt64(ref List<byte> list)
         {
             UInt64 data = 0;
             byte[] bytes = new byte[sizeof(UInt64)];

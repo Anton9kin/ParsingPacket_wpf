@@ -9,7 +9,7 @@ namespace ParsingPacket_wpf.Packet
 {
     class PacketDeviceInfo : PacketBase
     {
-        private enum E_Device_Error
+        private enum E_Device_Error : byte
         {
             NONE = 0x00,              //!< No error
             GPS = 0x01,               //!< Error GPS
@@ -33,7 +33,7 @@ namespace ParsingPacket_wpf.Packet
             MAX
         };
 
-        enum E_Device_Warning
+        enum E_Device_Warning : byte
         {
             NONE = 0x00,                      //!< No warning
             Device_SwitchOff = 0x01,          //!< Device to SwitchOff
@@ -53,7 +53,7 @@ namespace ParsingPacket_wpf.Packet
             MAX
         };
 
-        enum E_Device_Info
+        enum E_Device_Info : byte
         {
             NONE = 0x00,      //!< No info
             SOS_Get = 0x01,      //!< Device get SMS with SOS and LIGHT_OFF
@@ -87,47 +87,45 @@ namespace ParsingPacket_wpf.Packet
         };
 
 
-        private UInt64 Packet_Time { get; set; }         // Time create packet
-        private Byte Num { get; set; }                  // Number of Error/Warning/Info (now it always equals 1)
-        private E_Device_Error Error { get; set; }      // Type Error
-        private E_Device_Warning Warning { get; set; }  // Type Warning
-        private E_Device_Info Info { get; set; }		// Type Info
+        private UInt64 Packet_Time;         // Time create packet
+        private Byte Num;                  // Number of Error/Warning/Info (now it always equals 1)
+        private E_Device_Error Error;      // Type Error
+        private E_Device_Warning Warning;  // Type Warning
+        private E_Device_Info Info;		// Type Info
+        private byte[] CCID = new byte[20];       // CCID of device
 
-        public PacketDeviceInfo(string[] dataPack)
+        public PacketDeviceInfo(List<byte> data)
         {
-            Parameter p;
-            int n = 0;
-            int length = dataPack.Length;
-
-            if (parsing(dataPack) == false)
+            if (Parsing(ref data) == false)
             {
                 MessageBox.Show("Not correct data", "Warning", MessageBoxButton.OK);
                 return;
             }
+            Packet_Time = GetUInt64(ref data);
+            Num = GetByte(ref data);
 
-            data = new string[length - 4 - 5];
-            for (int i = 5; i < length - 4; i++)
-                data[i - 5] = dataPack[i];
+            Error = (E_Device_Error)GetByte(ref data);
+            Warning = (E_Device_Warning)GetByte(ref data);
+            Info = (E_Device_Info)GetByte(ref data);
 
-            string s = getStr(ref n, sizeof(Int64));
-            Packet_Time = Convert.ToUInt64(s, 16);
+            for (int i = 0; i < CCID.Length; i++)
+            {
+                CCID[i] = GetByte(ref data);
+            }
 
-            s = getStr(ref n, sizeof(byte));
-            Num = Convert.ToByte(s, 16);
+            CRC32 = GetUInt32(ref data);
+        }
 
-            s = getStr(ref n, sizeof(byte));
-            Error = (E_Device_Error)Convert.ToByte(s, 16);
+        public List<Parameter> GetListParam()
+        {
+            SetBaseParam();
 
-            s = getStr(ref n, sizeof(byte));
-            Warning = (E_Device_Warning)Convert.ToByte(s, 16);
-
-            s = getStr(ref n, sizeof(byte));
-            Info = (E_Device_Info)Convert.ToByte(s, 16);
-
-            p = getCCID(data, 12);
-            list.Add(p);
+            Parameter p;
 
             p = TimestampToDate(Packet_Time);
+            list.Add(p);
+
+            p = new Parameter { Param = "", Value = "DATA:" };
             list.Add(p);
 
             p = new Parameter { Param = "Num of ", Value = Num.ToString() };
@@ -141,6 +139,11 @@ namespace ParsingPacket_wpf.Packet
 
             p = new Parameter { Param = "Info", Value = Info.ToString() };
             list.Add(p);
+
+            p = GetCCID_Byte(ref CCID);
+            list.Add(p);
+
+            return list;
         }
     }
 }
