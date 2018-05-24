@@ -51,7 +51,6 @@ namespace ParsingPacket_wpf
                 }
 
                 list = new List<Parameter>();
-                int size = 0;
 
                 while (dataByte.Count > 0)
                 {
@@ -115,8 +114,8 @@ namespace ParsingPacket_wpf
                             list.AddRange(ur.GetListParam());
                             break;
                         case PacketType.TypePacket.Info_Update_Result:
-                            PacketResultUpdate rr = new PacketResultUpdate(dataStr);
-                            list = rr.list;
+                            PacketResultUpdate rr = new PacketResultUpdate(dataByte);
+                            list.AddRange(rr.GetListParam());
                             break;
                     }
                 }

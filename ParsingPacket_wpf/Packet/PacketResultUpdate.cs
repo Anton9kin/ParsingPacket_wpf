@@ -25,42 +25,37 @@ namespace ParsingPacket_wpf.Packet
         private UInt64 Packet_Time;   // Time create packet
         private byte[] Version = new byte[4];     // Name version update
         private E_Status_Update Update;			// Status updating (#UPDATE_SUCCESS, #UPDATE_ERROR_CONNECT_MOBILE)
+        private byte[] CCID = new byte[20];       // CCID of device
 
-
-
-        public PacketResultUpdate(string[] dataPack)
+        public PacketResultUpdate(List<byte> data)
         {
-            Parameter p;
-            int n = 0;
-
-            int length = dataPack.Length;
-
-            if (parsing(dataPack) == false)
+            if (Parsing(ref data) == false)
             {
                 MessageBox.Show("Not correct data", "Warning", MessageBoxButton.OK);
                 return;
             }
+            Packet_Time = GetUInt64(ref data);
 
-            data = new string[length - 4 - 5];
-            for (int i = 5; i < length - 4; i++)
-                data[i - 5] = dataPack[i];
-
-            string s = getStr(ref n, sizeof(Int64));
-            Packet_Time = Convert.ToUInt64(s, 16);
-
-            for (int i = 0; i < 4; i++)
+            for (int i = 0; i < Version.Length; i++)
             {
-                s = getStr(ref n, sizeof(byte));
-                Version[i] = Convert.ToByte(s, 16);
+                Version[i] = GetByte(ref data);
             }
+            Update = (E_Status_Update)GetByte(ref data);
 
-            s = getStr(ref n, sizeof(UInt16));
-            Update = (E_Status_Update)Convert.ToUInt16(s, 16);
+            for (int i = 0; i < CCID.Length; i++)
+            {
+                CCID[i] = GetByte(ref data);
+            }
+            CRC32 = GetUInt32(ref data);
+        }
 
-            p = getCCID(data, n);
-            list.Add(p);
+        public List<Parameter> GetListParam()
+        {
+            SetBaseParam();
 
-            p = TimestampToDate(Packet_Time);
+            Parameter p;
+
+            p = new Parameter { Param = "", Value = "DATA:" };
             list.Add(p);
 
             p = new Parameter { Param = "Version", Value = String.Format("{0}.{1}.{2}.{3}", Version[0], Version[1], Version[2], Version[3]) };
@@ -68,6 +63,11 @@ namespace ParsingPacket_wpf.Packet
 
             p = new Parameter { Param = "ResultUpdate", Value = Update.ToString() };
             list.Add(p);
+
+            p = GetCCID_Byte(ref CCID);
+            list.Add(p);
+
+            return list;
         }
     }
 }
