@@ -82,12 +82,12 @@ namespace ParsingPacket_wpf
                             list.AddRange(gr.GetListParam());
                             break;
                         case PacketType.TypePacket.Info_Device_Options_Req:
-                            PacketRequestOptions getOpt = new PacketRequestOptions(dataStr);
-                            list = getOpt.list;
+                            PacketRequestOptions getOpt = new PacketRequestOptions(dataByte);
+                            list.AddRange(getOpt.GetListParam());
                             break;
                         case PacketType.TypePacket.Info_Device_Options_Resp:
-                            PacketResponseOptions respOpt = new PacketResponseOptions(dataStr);
-                            list = respOpt.list;
+                            PacketResponseOptions respOpt = new PacketResponseOptions(dataByte);
+                            list.AddRange(respOpt.GetListParam());
                             break;
                         case PacketType.TypePacket.Telemetry:
                             PacketTelemetry pt = new PacketTelemetry(dataStr);

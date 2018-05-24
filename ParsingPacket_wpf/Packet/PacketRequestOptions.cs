@@ -9,31 +9,35 @@ namespace ParsingPacket_wpf.Packet
 {
     class PacketRequestOptions : PacketBase
     {
-        private UInt64 Packet_Time { get; set; }	// Time create packet
-        private int[] CCID { get; set; } = new int[20];       // CCID of device
+        private UInt64 Packet_Time;	// Time create packet
+        private byte[] CCID = new byte[20];       // CCID of device
 
-        public PacketRequestOptions(string[] dataPack) {
-            Parameter param;
-            int length = dataPack.Length;
-
-            if (parsing(dataPack) == false)
+        public PacketRequestOptions(List<byte> data)
+        {
+            if (Parsing(ref data) == false)
             {
                 MessageBox.Show("Not correct data", "Warning", MessageBoxButton.OK);
                 return;
             }
 
-            data = new string[length - 4 - 5];
-            for (int i = 5; i < length - 4; i++)
-                data[i - 5] = dataPack[i];
+            Packet_Time = GetUint64(ref data);
+            for (int i = 0; i < CCID.Length; i++)
+            {
+                CCID[i] = GetByte(ref data);
+            }
+            CRC32 = GetUInt32(ref data);
+        }
 
-            int n = 0;
-            string s = getStr(ref n, sizeof(Int64));
-            Packet_Time = Convert.ToUInt64(s, 16);
-            param = TimestampToDate(Packet_Time);
-            list.Add(param);
+        public List<Parameter> GetListParam()
+        {
+            SetBaseParam();
 
-            param = getCCID(data, 8);
-            list.Add(param);
+            Parameter p;
+
+            p = TimestampToDate(Packet_Time);
+            list.Add(p);
+
+            return list;
         }
     }
 }
