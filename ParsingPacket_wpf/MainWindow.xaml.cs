@@ -78,8 +78,8 @@ namespace ParsingPacket_wpf
                             list.AddRange(ra.GetListParam());
                             break;
                         case PacketType.TypePacket.Generic_Resp:
-                            PacketGenericResponse genResp = new PacketGenericResponse(dataStr);
-                            list = genResp.list;
+                            PacketGenericResponse gr = new PacketGenericResponse(dataByte);
+                            list.AddRange(gr.GetListParam());
                             break;
                         case PacketType.TypePacket.Info_Device_Options_Req:
                             PacketRequestOptions getOpt = new PacketRequestOptions(dataStr);

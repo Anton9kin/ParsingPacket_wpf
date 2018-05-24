@@ -31,6 +31,18 @@ namespace ParsingPacket_wpf.Packet
             return true;
         }
 
+        public void SetBaseParam()
+        {
+            Parameter p = new Parameter { Param = "Packet", Value = type.type.ToString() };
+            list.Add(p);
+
+            p = new Parameter { Param = "SEQ", Value = seq.ToString() };
+            list.Add(p);
+
+            p = new Parameter { Param = "CRC", Value = "0x" + CRC32.ToString("X") };
+            list.Add(p);
+        }
+
         public bool parsing(string[] data) {
             int length = data.Length;
             string tmpData = "";

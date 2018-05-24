@@ -19,7 +19,6 @@ namespace ParsingPacket_wpf.Packet
 
         public PacketActivity(List<byte> data)
         {
-            Parameter p;
             if (Parsing(ref data) == false)
             {
                 MessageBox.Show("Not correct data", "Warning", MessageBoxButton.OK);
@@ -41,14 +40,9 @@ namespace ParsingPacket_wpf.Packet
 
         public List<Parameter> GetListParam()
         {
-            Parameter p = new Parameter { Param = "Packet", Value = type.type.ToString() };
-            list.Add(p);
+            SetBaseParam();
 
-            p = new Parameter { Param = "SEQ", Value = seq.ToString() };
-            list.Add(p);
-
-            p = new Parameter { Param = "CRC", Value = "0x" + CRC32.ToString("X") };
-            list.Add(p);
+            Parameter p;
 
             p = TimestampToDate(Packet_Time);
             list.Add(p);
