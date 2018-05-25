@@ -24,17 +24,17 @@ namespace ParsingPacket_wpf.Packet
                 MessageBox.Show("Not correct data", "Warning", MessageBoxButton.OK);
                 return;
             }
-            Packet_Time = GetUInt64(ref data);
-            Step = GetUInt16(ref data);
-            Hi_Act_Time = GetUInt16(ref data);
-            Low_Act_Time = GetUInt16(ref data);
-            CSQ = GetFloat(ref data);
-            Charge = GetByte(ref data);
+            Packet_Time = WorkBuffer.GetUInt64(ref data);
+            Step = WorkBuffer.GetUInt16(ref data);
+            Hi_Act_Time = WorkBuffer.GetUInt16(ref data);
+            Low_Act_Time = WorkBuffer.GetUInt16(ref data);
+            CSQ = WorkBuffer.GetFloat(ref data);
+            Charge = WorkBuffer.GetByte(ref data);
             for (int i = 0; i < CCID.Length; i++)
             {
-                CCID[i] = GetByte(ref data);
+                CCID[i] = WorkBuffer.GetByte(ref data);
             }
-            CRC32 = GetUInt32(ref data);
+            CRC32 = WorkBuffer.GetUInt32(ref data);
 
         }
 
@@ -45,30 +45,30 @@ namespace ParsingPacket_wpf.Packet
             Parameter p;
 
             p = TimestampToDate(Packet_Time);
-            list.Add(p);
+            List.Add(p);
 
             p = new Parameter { Param = "", Value = "DATA:" };
-            list.Add(p);
+            List.Add(p);
 
             p = new Parameter { Param = "Step", Value = Step.ToString() + " steps" };
-            list.Add(p);
+            List.Add(p);
 
             p = new Parameter { Param = "Hi_Time", Value = Hi_Act_Time.ToString() + " sec"};
-            list.Add(p);
+            List.Add(p);
 
             p = new Parameter { Param = "Low_Time", Value = Low_Act_Time.ToString() + " sec" };
-            list.Add(p);
+            List.Add(p);
 
             p = new Parameter { Param = "CSQ", Value = CSQ.ToString() };
-            list.Add(p);
+            List.Add(p);
 
             p = new Parameter { Param = "Charge", Value = Charge.ToString() + "%" };
-            list.Add(p);
+            List.Add(p);
 
-            p = GetCCID_Byte(ref CCID);
-            list.Add(p);
+            p = GetCCID(ref CCID);
+            List.Add(p);
 
-            return list;
+            return List;
         }
     }
 }

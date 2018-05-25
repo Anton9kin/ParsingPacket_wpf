@@ -27,15 +27,15 @@ namespace ParsingPacket_wpf.Packet
                 MessageBox.Show("Not correct data", "Warning", MessageBoxButton.OK);
                 return;
             }
-            FileSize = GetUInt32(ref data);
-            FileCRC = GetUInt32(ref data);
+            FileSize = WorkBuffer.GetUInt32(ref data);
+            FileCRC = WorkBuffer.GetUInt32(ref data);
             for (int i = 0; i < Version.Length; i++)
             {
-                Version[i] = GetByte(ref data);
+                Version[i] = WorkBuffer.GetByte(ref data);
             }
-            Update = (E_Event_Result)GetByte(ref data);
+            Update = (E_Event_Result)WorkBuffer.GetByte(ref data);
 
-            CRC32 = GetUInt32(ref data);
+            CRC32 = WorkBuffer.GetUInt32(ref data);
         }
 
 
@@ -46,23 +46,23 @@ namespace ParsingPacket_wpf.Packet
             Parameter p;
 
             p = new Parameter { Param = "", Value = "DATA:" };
-            list.Add(p);
+            List.Add(p);
 
             p = new Parameter { Param = "Update", Value = (Update == E_Event_Result.EER_TRUE) ? "Enable" : "Disable" };
-            list.Add(p);
+            List.Add(p);
 
             if (Update == E_Event_Result.EER_TRUE)
             {
                 p = new Parameter { Param = "Version", Value = String.Format("{0}.{1}.{2}.{3}", Version[0], Version[1], Version[2], Version[3]) };
-                list.Add(p);
+                List.Add(p);
 
                 p = new Parameter { Param = "Size", Value = FileSize.ToString() + " bytes" };
-                list.Add(p);
+                List.Add(p);
 
                 p = new Parameter { Param = "CRC", Value = "0x" + FileCRC.ToString("X") };
-                list.Add(p);
+                List.Add(p);
             }
-            return list;
+            return List;
         }
     }
 }

@@ -9,7 +9,8 @@ namespace ParsingPacket_wpf.Packet
 {
     class PacketResultUpdate : PacketBase
     {
-        private enum E_Status_Update {
+        private enum E_Status_Update : byte
+        {
 			NONE = 0,
 			SUCCESS = (1 << 0),
 			ERROR_CONNECT_MOBILE = (1 << 1),
@@ -34,19 +35,19 @@ namespace ParsingPacket_wpf.Packet
                 MessageBox.Show("Not correct data", "Warning", MessageBoxButton.OK);
                 return;
             }
-            Packet_Time = GetUInt64(ref data);
+            Packet_Time = WorkBuffer.GetUInt64(ref data);
 
             for (int i = 0; i < Version.Length; i++)
             {
-                Version[i] = GetByte(ref data);
+                Version[i] = WorkBuffer.GetByte(ref data);
             }
-            Update = (E_Status_Update)GetByte(ref data);
+            Update = (E_Status_Update)WorkBuffer.GetByte(ref data);
 
             for (int i = 0; i < CCID.Length; i++)
             {
-                CCID[i] = GetByte(ref data);
+                CCID[i] = WorkBuffer.GetByte(ref data);
             }
-            CRC32 = GetUInt32(ref data);
+            CRC32 = WorkBuffer.GetUInt32(ref data);
         }
 
         public List<Parameter> GetListParam()
@@ -56,18 +57,18 @@ namespace ParsingPacket_wpf.Packet
             Parameter p;
 
             p = new Parameter { Param = "", Value = "DATA:" };
-            list.Add(p);
+            List.Add(p);
 
             p = new Parameter { Param = "Version", Value = String.Format("{0}.{1}.{2}.{3}", Version[0], Version[1], Version[2], Version[3]) };
-            list.Add(p);
+            List.Add(p);
 
             p = new Parameter { Param = "ResultUpdate", Value = Update.ToString() };
-            list.Add(p);
+            List.Add(p);
 
-            p = GetCCID_Byte(ref CCID);
-            list.Add(p);
+            p = GetCCID(ref CCID);
+            List.Add(p);
 
-            return list;
+            return List;
         }
     }
 }

@@ -14,7 +14,7 @@ namespace ParsingPacket_wpf.Packet
         private Byte ActivityPeriod;// Period send Activity packet
         private Byte Indication;       // Enable/Disable indication in Activity mode
         private UInt16 TelemetryPeriod; // Telemetry period (bit 0-7: in activity mode bits:8-15 in passive)
-        private CommandFromServer comServer;
+        private CommandFromServer ComServer;
 
         public PacketResponseOptions(List<byte> data)
         {
@@ -24,14 +24,14 @@ namespace ParsingPacket_wpf.Packet
                 return;
             }
 
-            NewTime = GetUInt64(ref data);
+            NewTime = WorkBuffer.GetUInt64(ref data);
 
-            ActivityPeriod = GetByte(ref data);
-            Indication = GetByte(ref data);
-            TelemetryPeriod = GetUInt16(ref data);
-            comServer = new CommandFromServer(data);
+            ActivityPeriod = WorkBuffer.GetByte(ref data);
+            Indication = WorkBuffer.GetByte(ref data);
+            TelemetryPeriod = WorkBuffer.GetUInt16(ref data);
+            ComServer = new CommandFromServer(data);
 
-            CRC32 = GetUInt32(ref data);
+            CRC32 = WorkBuffer.GetUInt32(ref data);
         }
 
         public List<Parameter> GetListParam()
@@ -41,27 +41,27 @@ namespace ParsingPacket_wpf.Packet
             Parameter p;
 
             p = new Parameter { Param = "", Value = "DATA:" };
-            list.Add(p);
+            List.Add(p);
 
             p = TimestampToDate(NewTime);
             p.Param = "New time";
-            list.Add(p);
+            List.Add(p);
 
             p = new Parameter { Param = "Period", Value = ActivityPeriod.ToString() };
-            list.Add(p);
+            List.Add(p);
 
             p = new Parameter { Param = "Indication", Value = Indication == 1 ? "ON" : "OFF" };
-            list.Add(p);
+            List.Add(p);
 
             p = new Parameter { Param = "Telemetry_Active", Value = (TelemetryPeriod & 0xFF).ToString() };
-            list.Add(p);
+            List.Add(p);
 
             p = new Parameter { Param = "Telemetry_Passive", Value = (TelemetryPeriod >> 8).ToString() };
-            list.Add(p);
+            List.Add(p);
 
-            list.AddRange(comServer.list);
+            List.AddRange(ComServer.List);
 
-            return list;
+            return List;
         }
     }
 

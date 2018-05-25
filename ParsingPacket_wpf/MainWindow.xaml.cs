@@ -35,7 +35,13 @@ namespace ParsingPacket_wpf
                 outData.Items.Clear();
 
                 string str = GetText();
-
+/*
+                char[] c = str.ToCharArray();
+                foreach(char ch in c)
+                {
+                    outData.Items.Add(new Parameter { Param = ch.ToString(), Value = String.Format("{0}", ch) });
+                }
+*/
                 str = CheckStringData(str);
 
                 Data.Document.Blocks.Clear();

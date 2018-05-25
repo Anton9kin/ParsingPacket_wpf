@@ -8,7 +8,8 @@ namespace ParsingPacket_wpf.Packet
 {
     class CommandFromServer
     {
-        public enum Type {
+        public enum Type : byte
+        {
             NULL = 0x00,    ///< No commands
 
             Get_TRANSPORT_Statistic = 0x01, ///< Get UDP statistic
@@ -101,9 +102,9 @@ namespace ParsingPacket_wpf.Packet
             MAX
         };
 
-        public Type Command { get; set; }
-        public UInt32 CommandData { get; set; }
-        public List<Parameter> list { get; set; } = new List<Parameter>();
+        private Type Command { get; set; }
+        private UInt32 CommandData { get; set; }
+        public List<Parameter> List { get; set; } = new List<Parameter>();
 
         public CommandFromServer(List<byte> data)
         {
@@ -117,7 +118,7 @@ namespace ParsingPacket_wpf.Packet
             Parameter p = new Parameter { Param = "Command from server", Value = Command.ToString() };
 
             if (Command != Type.GeoFence)
-                list.Add(p);
+                List.Add(p);
 
             if (Command != Type.NULL)
             {
@@ -127,7 +128,7 @@ namespace ParsingPacket_wpf.Packet
                         if (CommandData != 0)
                         {
                             p.Value += "_ON";
-                            list.Add(p);
+                            List.Add(p);
 
                             byte[] bits = new byte[4];
                             GeoFence point;
@@ -135,121 +136,45 @@ namespace ParsingPacket_wpf.Packet
                             for (int k = 0; k < CommandData; k++)
                             {
                                 point = new GeoFence(data);
-                                p = new Parameter { Param = "Corner " + point.index.ToString(), Value = point.Latitude.ToString() + " " + point.Longitude.ToString() };
-                                list.Add(p);
+                                p = new Parameter { Param = "Corner " + point.Index.ToString(), Value = point.Latitude.ToString() + " " + point.Longitude.ToString() };
+                                List.Add(p);
                             }
 
                         }
                         else
                         {
                             p.Value += "_OFF";
-                            list.Add(p);
+                            List.Add(p);
                         }
                         break;
 
                     case Type.GetLogPart:
                         p = new Parameter { Param = "Size get log", Value = CommandData.ToString() + " bytes" };
-                        list.Add(p);
+                        List.Add(p);
                         break;
 
                     case Type.SetActLocRate:
                         p = new Parameter { Param = "Rate", Value = CommandData.ToString() };
-                        list.Add(p);
+                        List.Add(p);
                         break;
 
                     case Type.SetSOS:
                     case Type.SetSOSParam:
                         p = new Parameter { Param = "Rate", Value = (CommandData & 0xFFFF).ToString() };
-                        list.Add(p);
+                        List.Add(p);
 
                         p = new Parameter { Param = "Period", Value = (CommandData >> 16).ToString() };
-                        list.Add(p);
+                        List.Add(p);
                         break;
 
                     case Type.SetUPDParam:
                         p = new Parameter { Param = "Rate", Value = CommandData.ToString() };
-                        list.Add(p);
+                        List.Add(p);
                         break;
 
                     case Type.SwitchLight:
                         p = new Parameter { Param = "", Value = "Indication_" + (CommandData == 0 ? "OFF" : "ON") };
-                        list.Add(p);
-                        break;
-                }
-            }
-        }
-
-        public CommandFromServer(string[] str, int i) {
-            Parameter param = new Parameter { Param = "", Value = "" };
-            list.Add(param);
-
-            Command = CheckCommand(Byte.Parse(str[i], System.Globalization.NumberStyles.HexNumber));
-            CommandData = UInt32.Parse(str[i + 4] + str[i + 3] + str[i + 2] + str[i + 1], System.Globalization.NumberStyles.HexNumber);
-
-            param = new Parameter { Param = "Command server", Value = Command.ToString() };
-
-            if (Command != Type.GeoFence)
-                list.Add(param);
-
-            if (Command != Type.NULL)
-            {
-                switch (Command)
-                {
-                    case Type.GeoFence:
-                        if (CommandData != 0)
-                        {
-                            param.Value += "_ON";
-                            list.Add(param);
-
-                            string s;
-                            float Lat, Long;
-                            Byte index;
-
-                            for (int k = 0; k < CommandData; k++)
-                            {
-                                s = str[5 * k + 8] + str[5 * k + 7] + str[5 * k + 6] + str[5 * k + 5];
-                                Lat = ConvertHexStr(s);
-                                index = Byte.Parse(str[5 * k + 9], System.Globalization.NumberStyles.HexNumber);
-                                s = str[5 * k + 13] + str[5 * k + 12] + str[5 * k + 11] + str[5 * k + 10];
-                                Long = ConvertHexStr(s);
-                                param = new Parameter { Param = "Corner " + index.ToString(), Value = Lat.ToString() + " " + Long.ToString() };
-                                list.Add(param);
-                            }
-
-                        }
-                        else
-                        {
-                            param.Value += "_OFF";
-                            list.Add(param);
-                        }
-                        break;
-
-                    case Type.GetLogPart:
-                        param = new Parameter { Param = "Size get log", Value = CommandData.ToString() + " bytes" } ;
-                        list.Add(param);
-                        break;
-
-                    case Type.SetActLocRate:
-                        param = new Parameter { Param = "Rate", Value = CommandData.ToString() };
-                        list.Add(param);
-                        break;
-
-                    case Type.SetSOS: case Type.SetSOSParam:
-                        param = new Parameter { Param = "Rate", Value = (CommandData & 0xFFFF).ToString() };
-                        list.Add(param);
-
-                        param = new Parameter { Param = "Period", Value = (CommandData >> 16).ToString() };
-                        list.Add(param);
-                        break;
-
-                    case Type.SetUPDParam:
-                        param = new Parameter { Param = "Rate", Value = CommandData.ToString() };
-                        list.Add(param);
-                        break;
-
-                    case Type.SwitchLight:
-                        param = new Parameter { Param = "", Value = "Indication_" + (CommandData == 0 ? "OFF" : "ON") };
-                        list.Add(param);
+                        List.Add(p);
                         break;
                 }
             }
@@ -265,15 +190,6 @@ namespace ParsingPacket_wpf.Packet
             }
 
             return Type.NULL;
-        }
-
-        public float ConvertHexStr(string s)
-        {
-            Int32 d = Convert.ToInt32(s, 16);
-            double f = Convert.ToDouble(d);
-
-            byte[] bytes = BitConverter.GetBytes(d);
-            return BitConverter.ToSingle(bytes, 0);
         }
     }
 }

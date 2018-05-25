@@ -9,15 +9,13 @@ namespace ParsingPacket_wpf.Packet
     {
         public float Latitude { get; set; } /*!< GPS coordinate latitude */
         public float Longitude { get; set; }    /*!< GPS coordinate longitude */
-        public byte index { get; set; }		/*!< Number of point*/
+        public byte Index { get; set; }		/*!< Number of point*/
 
         public GeoFence(List<byte> data)
         {
-            PacketBase pack = new PacketBase();
-
-            Latitude = pack.GetFloat(ref data);
-            Longitude = pack.GetFloat(ref data);
-            index = pack.GetByte(ref data);
+            Latitude = WorkBuffer.GetFloat(ref data);
+            Longitude = WorkBuffer.GetFloat(ref data);
+            Index = WorkBuffer.GetByte(ref data);
         }
     }
 }

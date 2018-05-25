@@ -20,12 +20,12 @@ namespace ParsingPacket_wpf.Packet
                 return;
             }
 
-            Packet_Time = GetUInt64(ref data);
+            Packet_Time = WorkBuffer.GetUInt64(ref data);
             for (int i = 0; i < CCID.Length; i++)
             {
-                CCID[i] = GetByte(ref data);
+                CCID[i] = WorkBuffer.GetByte(ref data);
             }
-            CRC32 = GetUInt32(ref data);
+            CRC32 = WorkBuffer.GetUInt32(ref data);
         }
 
         public List<Parameter> GetListParam()
@@ -35,9 +35,9 @@ namespace ParsingPacket_wpf.Packet
             Parameter p;
 
             p = TimestampToDate(Packet_Time);
-            list.Add(p);
+            List.Add(p);
 
-            return list;
+            return List;
         }
     }
 }

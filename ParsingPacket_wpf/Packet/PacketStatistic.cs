@@ -22,11 +22,11 @@ namespace ParsingPacket_wpf.Packet
             UnknownBoot,  //!< EBS_UnknownBoot
         };
 
-        private CommandFromServer.Type mode;   // Type statistic (#ECC_Get_UDP_Statistic, #ECC_Get_UDP_Error, #ECC_GETStatusDevice, #ECC_DeviceVers)
+        private CommandFromServer.Type Mode;   // Type statistic (#ECC_Get_UDP_Statistic, #ECC_Get_UDP_Error, #ECC_GETStatusDevice, #ECC_DeviceVers)
         private UInt32 RX_packets;         // Data statistic
         private UInt32 TX_packets;         // Data statistic
-        private UInt32 out_bytes;          // Data statistic
-        private UInt32 in_bytes;	        // Data statistic
+        private UInt32 Out_bytes;          // Data statistic
+        private UInt32 In_bytes;	        // Data statistic
         private byte[] CCID = new byte[20];       // CCID of device
 
         public PacketStatistic(List<byte> data)
@@ -37,16 +37,16 @@ namespace ParsingPacket_wpf.Packet
                 return;
             }
 
-            mode = (CommandFromServer.Type)GetByte(ref data);
-            RX_packets = GetUInt32(ref data);
-            TX_packets = GetUInt32(ref data);
-            out_bytes = GetUInt32(ref data);
-            in_bytes = GetUInt32(ref data);
+            Mode = (CommandFromServer.Type)WorkBuffer.GetByte(ref data);
+            RX_packets = WorkBuffer.GetUInt32(ref data);
+            TX_packets = WorkBuffer.GetUInt32(ref data);
+            Out_bytes = WorkBuffer.GetUInt32(ref data);
+            In_bytes = WorkBuffer.GetUInt32(ref data);
             for (int i = 0; i < CCID.Length; i++)
             {
-                CCID[i] = GetByte(ref data);
+                CCID[i] = WorkBuffer.GetByte(ref data);
             }
-            CRC32 = GetUInt32(ref data);
+            CRC32 = WorkBuffer.GetUInt32(ref data);
         }
 
         public List<Parameter> GetListParam()
@@ -55,41 +55,41 @@ namespace ParsingPacket_wpf.Packet
 
             Parameter p;
 
-            p = GetCCID_Byte(ref CCID);
-            list.Add(p);
+            p = GetCCID(ref CCID);
+            List.Add(p);
 
             p = new Parameter { Param = "", Value = "DATA:" };
-            list.Add(p);
+            List.Add(p);
 
-            switch (mode)
+            switch (Mode)
             {
                 case CommandFromServer.Type.Get_TRANSPORT_Statistic:
-                    p = new Parameter { Param = "Num of Received Packets", Value = String.Format("{0} ({1} bytes)", RX_packets, in_bytes) };
-                    list.Add(p);
+                    p = new Parameter { Param = "Num of Received Packets", Value = String.Format("{0} ({1} bytes)", RX_packets, In_bytes) };
+                    List.Add(p);
 
-                    p = new Parameter { Param = "Num of Sended Packets", Value = String.Format("{0} ({1} bytes)", TX_packets, out_bytes) };
-                    list.Add(p);
+                    p = new Parameter { Param = "Num of Sended Packets", Value = String.Format("{0} ({1} bytes)", TX_packets, Out_bytes) };
+                    List.Add(p);
 
                     break;
 
                 case CommandFromServer.Type.Get_TRANSPORT_Error:
                     p = new Parameter { Param = "Num of Open Error", Value = RX_packets.ToString() };
-                    list.Add(p);
+                    List.Add(p);
 
                     p = new Parameter { Param = "Num of Close Error", Value = TX_packets.ToString() };
-                    list.Add(p);
+                    List.Add(p);
 
-                    p = new Parameter { Param = "Num of Send Error", Value = out_bytes.ToString() };
-                    list.Add(p);
+                    p = new Parameter { Param = "Num of Send Error", Value = Out_bytes.ToString() };
+                    List.Add(p);
 
-                    p = new Parameter { Param = "Num of Receive Error", Value = in_bytes.ToString() };
-                    list.Add(p);
+                    p = new Parameter { Param = "Num of Receive Error", Value = In_bytes.ToString() };
+                    List.Add(p);
                     break;
 
                 case CommandFromServer.Type.GETStatusDevice:
                     E_Boot_State boot = (E_Boot_State)(RX_packets & 0xFF);
                     p = new Parameter { Param = "Num of Open Error", Value = boot.ToString() };
-                    list.Add(p);
+                    List.Add(p);
                     break;
 
                 case CommandFromServer.Type.DeviceVers:
@@ -99,15 +99,15 @@ namespace ParsingPacket_wpf.Packet
                     UInt32 modemVer = (RX_packets >> 16) & 0xFF;
 
                     p = new Parameter { Param = "Version FirmWare", Value = String.Format("v%d_%d_rev_%d", algorithm, release, rev) };
-                    list.Add(p);
+                    List.Add(p);
 
                     p = new Parameter { Param = "Version Modem", Value = modemVer.ToString() };
-                    list.Add(p);
+                    List.Add(p);
 
                     break;
             }
 
-            return list;
+            return List;
         }
     }
 }

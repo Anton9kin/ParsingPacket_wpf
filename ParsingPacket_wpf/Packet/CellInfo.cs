@@ -14,11 +14,9 @@ namespace ParsingPacket_wpf.Packet
 
         public CellInfo(List<byte> data)
         {
-            PacketBase pack = new PacketBase();
-
-            LAC = pack.GetUInt16(ref data);
-            CELL_ID = pack.GetUInt32(ref data);
-            RSSI = pack.GetByte(ref data);
+            LAC = WorkBuffer.GetUInt16(ref data);
+            CELL_ID = WorkBuffer.GetUInt32(ref data);
+            RSSI = WorkBuffer.GetByte(ref data);
         }
     }
 }
