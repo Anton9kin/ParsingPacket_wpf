@@ -134,6 +134,11 @@ namespace ParsingPacket_wpf
                             PacketResultUpdate rr = new PacketResultUpdate(dataByte);
                             list.AddRange(rr.GetListParam());
                             break;
+                        default:
+                            Byte b = WorkBuffer.GetByte(ref dataByte);
+                            Parameter p = new Parameter { Param = "UNKNOWN", Value = b.ToString("X") };
+                            list.Add(p);
+                            break;
                     }
                 }
                 
@@ -159,6 +164,8 @@ namespace ParsingPacket_wpf
             var re = new Regex("\r\n");
 
             newS = re.Replace(str, "");
+
+            newS = newS.Trim(' ');
 
             return newS;
         }
