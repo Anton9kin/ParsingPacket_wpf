@@ -53,7 +53,18 @@ namespace ParsingPacket_wpf
                 List<byte> dataByte = new List<byte>();
                 foreach (string s in dataStr)
                 {
-                    dataByte.Add(Byte.Parse(s, System.Globalization.NumberStyles.HexNumber));
+                    Byte b = 0;
+
+                    if (Byte.TryParse(s, System.Globalization.NumberStyles.HexNumber, null, out b) == true)
+                    {
+                        dataByte.Add(b);
+                    }
+                    else
+                    {
+                        MessageBox.Show("Check input data", "Warning", MessageBoxButton.OK);
+                        outData.Items.Clear();
+                        return;
+                    }
                 }
 
                 list = new List<Parameter>();
