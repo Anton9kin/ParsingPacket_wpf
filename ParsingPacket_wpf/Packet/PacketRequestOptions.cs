@@ -37,6 +37,9 @@ namespace ParsingPacket_wpf.Packet
             p = TimestampToDate(Packet_Time);
             List.Add(p);
 
+            p = GetCCID(ref CCID);
+            List.Add(p);
+
             return List;
         }
     }
